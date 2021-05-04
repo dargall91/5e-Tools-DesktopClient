@@ -108,6 +108,11 @@ public class Monster {
 		try {
 			name = (String) json.get("name");
 			displayName = (String) json.get("displayName");
+
+			if (displayName.equals("")) {
+				displayName = name;
+			}
+
 			type = (String) json.get("type");
 			alignment = (String) json.get("alignment");
 			size = (String) json.get("size");

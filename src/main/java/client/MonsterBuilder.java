@@ -1,12 +1,12 @@
 package client;
 
-import client.*;
 import monster.*;
 import monster.Action;
 //import java.lang.Math;
 import java.util.ArrayList;
 import java.awt.event.*;
 import java.awt.*;
+import java.util.Collections;
 import javax.swing.*;
 import javax.swing.event.*;
 
@@ -82,6 +82,8 @@ public class MonsterBuilder extends JSplitPane {
 		scroll.setPreferredSize(new Dimension(LEFT_WIDTH, HEIGHT));
 		list = new JList();
 		monList = proxy.getMonsterList();
+
+		Collections.sort(monList);
 		
 		list.setModel(new AbstractListModel() {
 			public int getSize() {
@@ -92,13 +94,13 @@ public class MonsterBuilder extends JSplitPane {
 				return monList.get(i);
 			}
 		});
-		
+
 		list.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent event) {
 				listValueChanged(event);
 			}
 		});
-		
+
 		scroll.setViewportView(list);
 		
 		return scroll;
@@ -128,7 +130,6 @@ public class MonsterBuilder extends JSplitPane {
 			scroll.setViewportView(panel);
 			return scroll;
 		}
-			
 		
 		//size
 		panel.add(getSizePanel());
@@ -181,12 +182,13 @@ public class MonsterBuilder extends JSplitPane {
 			panel.add(Box.createRigidArea(VERTICAL_GAP));
 		}
 		
-		JButton addAbility = new JButton("Add monster.Ability");
+		JButton addAbility = new JButton("Add Ability");
 		addAbility.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				monster.addAbility(new Ability());
-				refreshRight();
+				revalidate();
+				repaint();
 			}
 		});
 		
@@ -204,7 +206,7 @@ public class MonsterBuilder extends JSplitPane {
 			panel.add(Box.createRigidArea(VERTICAL_GAP));
 		}
 		
-		JButton addAction = new JButton("Add monster.Action");
+		JButton addAction = new JButton("Add Action");
 		addAction.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -229,7 +231,7 @@ public class MonsterBuilder extends JSplitPane {
 			panel.add(Box.createRigidArea(VERTICAL_GAP));
 		}
 		
-		JButton addLegendary = new JButton("Add Legendary monster.Action");
+		JButton addLegendary = new JButton("Add Legendary Action");
 		addLegendary.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -480,13 +482,6 @@ public class MonsterBuilder extends JSplitPane {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-		JPanel profPanel = new JPanel();
-		profPanel.setLayout(new BoxLayout(profPanel, BoxLayout.X_AXIS));
-		profPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-		profPanel.setMaximumSize(new Dimension(INNER_WIDTH, INNER_HEIGHT));
-		JLabel profLabel = new JLabel("Proficiency Bonus");
-		profLabel.setFont(new Font(profLabel.getFont().getName(), Font.BOLD, profLabel.getFont().getSize()));
-		JTextField proficiency = new JTextField(Integer.toString(monster.getProficiency()));
 		
 		JPanel scorePanel = new JPanel();
 		scorePanel.setMinimumSize(new Dimension(INNER_WIDTH, 210));
@@ -494,45 +489,12 @@ public class MonsterBuilder extends JSplitPane {
 		scorePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		scorePanel.setLayout(new BoxLayout(scorePanel, BoxLayout.X_AXIS));
 		
-		proficiency.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyChar() >= '0' && e.getKeyChar() <= '9' || (e.getKeyCode() == KeyEvent.VK_BACK_SPACE 
-					|| e.getKeyCode() == KeyEvent.VK_DELETE))
-					proficiency.setEditable(true);
-					
-				else
-					proficiency.setEditable(false);
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent e) {
-				if (proficiency.getText().equals(""))
-					proficiency.setText("0");
-					
-				if (proficiency.getText().length() > 1 && proficiency.getText().charAt(0) == '0')
-					proficiency.setText(proficiency.getText().substring(1));
-					
-				//monster.setProficiency(Integer.parseInt(proficiency.getText()));
-			}
-		});
-		
-		//TODO: add Proficiency panel here? pass to all ability score panels so that
-		//changes are reflected in each one
-		//or pass proficiency to this panel, then pass again to each score
-		
-		profPanel.add(profLabel);
-		profPanel.add(Box.createRigidArea(HORIZONTAL_GAP));
-		profPanel.add(proficiency);
-		panel.add(profPanel);
-		panel.add(Box.createRigidArea(VERTICAL_GAP));
-		
-		scorePanel.add(getStr(proficiency));
-		scorePanel.add(getDex(proficiency));
-		scorePanel.add(getCon(proficiency));
-		scorePanel.add(getInt(proficiency));
-		scorePanel.add(getWis(proficiency));
-		scorePanel.add(getCha(proficiency));
+		scorePanel.add(getStr());
+		scorePanel.add(getDex());
+		scorePanel.add(getCon());
+		scorePanel.add(getInt());
+		scorePanel.add(getWis());
+		scorePanel.add(getCha());
 		panel.add(scorePanel);
 		
 		return panel;
@@ -544,7 +506,7 @@ public class MonsterBuilder extends JSplitPane {
 	 * then adding listener here to that changing proficiency will automatically update
 	 * skills and saves
 	 */
-	private JPanel getStr(JTextField proficiency) {
+	private JPanel getStr() {
 		final String STR = "STR";
 		int strScore = monster.getAbilityScore(STR);
 		int strMod = Math.floorDiv(strScore - 10, 2);
@@ -578,7 +540,7 @@ public class MonsterBuilder extends JSplitPane {
 					monster.getAbilityProficiency(STR), false)));
 		save.setFont(new Font(save.getFont().getName(), Font.PLAIN, save.getFont().getSize()));
 	
-		final String ATH = "athletics";
+		final String ATH = "Athletics";
 		JPanel athPanel = new JPanel();
 		athPanel.setLayout(new BoxLayout(athPanel, BoxLayout.X_AXIS));
 		JLabel athletics = new JLabel("Athletics: " + signBonus(calcBonus(strMod, monster.getProficiency(),
@@ -589,6 +551,8 @@ public class MonsterBuilder extends JSplitPane {
 		athProfBox.setSelected(monster.getSkillProficienct(ATH));
 		athExpBox.setSelected(monster.getSkillExpertise(ATH));
 		
+
+		//TODO: make scores spinners
 		//listeners for Score text field
 		score.addKeyListener(new KeyAdapter() {
 			@Override
@@ -682,19 +646,6 @@ public class MonsterBuilder extends JSplitPane {
 			}
 		});
 		
-		proficiency.getDocument().addDocumentListener(listener);
-		proficiency.addFocusListener(new FocusListener() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				listener.start();
-			}
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				listener.stop();
-			}
-		});
-		
 		strPanel.add(str);
 		strPanel.add(Box.createRigidArea(VERTICAL_GAP));
 		strPanel.add(score);
@@ -719,7 +670,7 @@ public class MonsterBuilder extends JSplitPane {
 	 * then adding listener here to that changing proficiency will automatically update
 	 * skills and saves
 	 */
-	private JPanel getDex(JTextField proficiency) {
+	private JPanel getDex() {
 		final String DEX = "DEX";
 		int dexScore = monster.getAbilityScore(DEX);
 		int dexMod = Math.floorDiv(dexScore - 10, 2);
@@ -753,7 +704,7 @@ public class MonsterBuilder extends JSplitPane {
 			monster.getAbilityProficiency(DEX), false)));
 		save.setFont(new Font(save.getFont().getName(), Font.PLAIN, save.getFont().getSize()));
 		
-		final String ACRO = "acrobatics";
+		final String ACRO = "Acrobatics";
 		JPanel acroPanel = new JPanel();
 		acroPanel.setLayout(new BoxLayout(acroPanel, BoxLayout.X_AXIS));
 		JLabel acrobatics = new JLabel("Acrobatics: " + signBonus(calcBonus(dexMod, monster.getProficiency(),
@@ -764,7 +715,7 @@ public class MonsterBuilder extends JSplitPane {
 		acroProfBox.setSelected(monster.getSkillProficienct(ACRO));
 		acroExpBox.setSelected(monster.getSkillExpertise(ACRO));
 		
-		final String HAND = "sleight of hand";
+		final String HAND = "Sleight of Hand";
 		JPanel handPanel = new JPanel();
 		handPanel.setLayout(new BoxLayout(handPanel, BoxLayout.X_AXIS));
 		JLabel hand = new JLabel("Sleight of Hand: " + signBonus(calcBonus(dexMod, monster.getProficiency(),
@@ -775,7 +726,7 @@ public class MonsterBuilder extends JSplitPane {
 		handProfBox.setSelected(monster.getSkillProficienct(HAND));
 		handExpBox.setSelected(monster.getSkillExpertise(HAND));
 		
-		final String STE = "stealth";
+		final String STE = "Stealth";
 		JPanel stePanel = new JPanel();
 		stePanel.setLayout(new BoxLayout(stePanel, BoxLayout.X_AXIS));
 		JLabel stealth = new JLabel("Stealth: " + signBonus(calcBonus(dexMod, monster.getProficiency(),
@@ -952,20 +903,7 @@ public class MonsterBuilder extends JSplitPane {
 					monster.getSkillProficienct(STE), monster.getSkillExpertise(STE))));
 			}
 		});
-		
-		proficiency.getDocument().addDocumentListener(listener);
-		proficiency.addFocusListener(new FocusListener() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				listener.start();
-			}
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				listener.stop();
-			}
-		});
-		
+
 		dexPanel.add(dex);
 		dexPanel.add(Box.createRigidArea(VERTICAL_GAP));
 		dexPanel.add(score);
@@ -1002,7 +940,7 @@ public class MonsterBuilder extends JSplitPane {
 	 * then adding listener here to that changing proficiency will automatically update
 	 * skills and saves
 	 */
-	private JPanel getCon(JTextField proficiency) {
+	private JPanel getCon() {
 		final String CON = "CON";
 		int conScore = monster.getAbilityScore(CON);
 		int conMod = Math.floorDiv(conScore - 10, 2);
@@ -1092,19 +1030,6 @@ public class MonsterBuilder extends JSplitPane {
 			}
 		});
 		
-		proficiency.getDocument().addDocumentListener(listener);
-		proficiency.addFocusListener(new FocusListener() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				listener.start();
-			}
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				listener.stop();
-			}
-		});
-		
 		conPanel.add(con);
 		conPanel.add(Box.createRigidArea(VERTICAL_GAP));
 		conPanel.add(score);
@@ -1124,7 +1049,7 @@ public class MonsterBuilder extends JSplitPane {
 	 * then adding listener here to that changing proficiency will automatically update
 	 * skills and saves
 	 */
-	private JPanel getInt(JTextField proficiency) {
+	private JPanel getInt() {
 		final String INT = "INT";
 		int intScore = monster.getAbilityScore(INT);
 		int intMod = Math.floorDiv(intScore - 10, 2);
@@ -1158,7 +1083,7 @@ public class MonsterBuilder extends JSplitPane {
 			monster.getAbilityProficiency(INT), false)));
 		save.setFont(new Font(save.getFont().getName(), Font.PLAIN, save.getFont().getSize()));
 		
-		final String ARC = "arcana";
+		final String ARC = "Arcana";
 		JPanel arcPanel = new JPanel();
 		arcPanel.setLayout(new BoxLayout(arcPanel, BoxLayout.X_AXIS));
 		JLabel arcana = new JLabel("Arcana: " + signBonus(calcBonus(intMod, monster.getProficiency(),
@@ -1169,7 +1094,7 @@ public class MonsterBuilder extends JSplitPane {
 		arcProfBox.setSelected(monster.getSkillProficienct(ARC));
 		arcExpBox.setSelected(monster.getSkillExpertise(ARC));
 		
-		final String HIS = "history";
+		final String HIS = "History";
 		JPanel hisPanel = new JPanel();
 		hisPanel.setLayout(new BoxLayout(hisPanel, BoxLayout.X_AXIS));
 		JLabel history = new JLabel("History: " + signBonus(calcBonus(intMod, monster.getProficiency(),
@@ -1180,7 +1105,7 @@ public class MonsterBuilder extends JSplitPane {
 		hisProfBox.setSelected(monster.getSkillProficienct(HIS));
 		hisExpBox.setSelected(monster.getSkillExpertise(HIS));
 		
-		final String INV = "investigation";
+		final String INV = "Investigation";
 		JPanel invPanel = new JPanel();
 		invPanel.setLayout(new BoxLayout(invPanel, BoxLayout.X_AXIS));
 		JLabel investigation = new JLabel("Investigation: " + signBonus(calcBonus(intMod, monster.getProficiency(),
@@ -1191,7 +1116,7 @@ public class MonsterBuilder extends JSplitPane {
 		invProfBox.setSelected(monster.getSkillProficienct(INV));
 		invExpBox.setSelected(monster.getSkillExpertise(INV));
 		
-		final String NAT = "nature";
+		final String NAT = "Nature";
 		JPanel natPanel = new JPanel();
 		natPanel.setLayout(new BoxLayout(natPanel, BoxLayout.X_AXIS));
 		JLabel nature = new JLabel("Nature: " + signBonus(calcBonus(intMod, monster.getProficiency(),
@@ -1202,7 +1127,7 @@ public class MonsterBuilder extends JSplitPane {
 		natProfBox.setSelected(monster.getSkillProficienct(NAT));
 		natExpBox.setSelected(monster.getSkillExpertise(NAT));
 		
-		final String REL = "religion";
+		final String REL = "Religion";
 		JPanel relPanel = new JPanel();
 		relPanel.setLayout(new BoxLayout(relPanel, BoxLayout.X_AXIS));
 		JLabel religion = new JLabel("Religion: " + signBonus(calcBonus(intMod, monster.getProficiency(),
@@ -1454,19 +1379,6 @@ public class MonsterBuilder extends JSplitPane {
 			}
 		});
 		
-		proficiency.getDocument().addDocumentListener(listener);
-		proficiency.addFocusListener(new FocusListener() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				listener.start();
-			}
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				listener.stop();
-			}
-		});
-		
 		intPanel.add(inte);
 		intPanel.add(Box.createRigidArea(VERTICAL_GAP));
 		intPanel.add(score);
@@ -1515,7 +1427,7 @@ public class MonsterBuilder extends JSplitPane {
 	 * then adding listener here to that changing proficiency will automatically update
 	 * skills and saves
 	 */
-	private JPanel getWis(JTextField proficiency) {
+	private JPanel getWis() {
 		final String WIS = "WIS";
 		int wisScore = monster.getAbilityScore(WIS);
 		int wisMod = Math.floorDiv(wisScore - 10, 2);
@@ -1549,7 +1461,7 @@ public class MonsterBuilder extends JSplitPane {
 			monster.getAbilityProficiency(WIS), false)));
 		save.setFont(new Font(save.getFont().getName(), Font.PLAIN, save.getFont().getSize()));
 		
-		final String ANI = "animal handling";
+		final String ANI = "Animal Handling";
 		JPanel aniPanel = new JPanel();
 		aniPanel.setLayout(new BoxLayout(aniPanel, BoxLayout.X_AXIS));
 		JLabel animal = new JLabel("Animal Handling: " + signBonus(calcBonus(wisMod, monster.getProficiency(),
@@ -1560,7 +1472,7 @@ public class MonsterBuilder extends JSplitPane {
 		aniProfBox.setSelected(monster.getSkillProficienct(ANI));
 		aniExpBox.setSelected(monster.getSkillExpertise(ANI));
 		
-		final String INS = "insight";
+		final String INS = "Insight";
 		JPanel insPanel = new JPanel();
 		insPanel.setLayout(new BoxLayout(insPanel, BoxLayout.X_AXIS));
 		JLabel insight = new JLabel("Insight: " + signBonus(calcBonus(wisMod, monster.getProficiency(),
@@ -1571,7 +1483,7 @@ public class MonsterBuilder extends JSplitPane {
 		insProfBox.setSelected(monster.getSkillProficienct(INS));
 		insExpBox.setSelected(monster.getSkillExpertise(INS));
 		
-		final String MED = "medicine";
+		final String MED = "Medicine";
 		JPanel medPanel = new JPanel();
 		medPanel.setLayout(new BoxLayout(medPanel, BoxLayout.X_AXIS));
 		JLabel medicine = new JLabel("Medicine: " + signBonus(calcBonus(wisMod, monster.getProficiency(),
@@ -1582,7 +1494,7 @@ public class MonsterBuilder extends JSplitPane {
 		medProfBox.setSelected(monster.getSkillProficienct(MED));
 		medExpBox.setSelected(monster.getSkillExpertise(MED));
 		
-		final String PER = "perception";
+		final String PER = "Perception";
 		JPanel perPanel = new JPanel();
 		perPanel.setLayout(new BoxLayout(perPanel, BoxLayout.X_AXIS));
 		JLabel perception = new JLabel("Perception: " + signBonus(calcBonus(wisMod, monster.getProficiency(),
@@ -1593,7 +1505,7 @@ public class MonsterBuilder extends JSplitPane {
 		perProfBox.setSelected(monster.getSkillProficienct(PER));
 		perExpBox.setSelected(monster.getSkillExpertise(PER));
 		
-		final String SUR = "survival";
+		final String SUR = "Survival";
 		JPanel surPanel = new JPanel();
 		surPanel.setLayout(new BoxLayout(surPanel, BoxLayout.X_AXIS));
 		JLabel survival = new JLabel("Survival: " + signBonus(calcBonus(wisMod, monster.getProficiency(),
@@ -1845,19 +1757,6 @@ public class MonsterBuilder extends JSplitPane {
 			}
 		});
 		
-		proficiency.getDocument().addDocumentListener(listener);
-		proficiency.addFocusListener(new FocusListener() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				listener.start();
-			}
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				listener.stop();
-			}
-		});
-		
 		wisPanel.add(wis);
 		wisPanel.add(Box.createRigidArea(VERTICAL_GAP));
 		wisPanel.add(score);
@@ -1906,7 +1805,7 @@ public class MonsterBuilder extends JSplitPane {
 	 * then adding listener here to that changing proficiency will automatically update
 	 * skills and saves
 	 */
-	private JPanel getCha(JTextField proficiency) {
+	private JPanel getCha() {
 		final String CHA = "CHA";
 		int chaScore = monster.getAbilityScore(CHA);
 		int chaMod = Math.floorDiv(chaScore - 10, 2);
@@ -1940,7 +1839,7 @@ public class MonsterBuilder extends JSplitPane {
 			monster.getAbilityProficiency(CHA), false)));
 		save.setFont(new Font(save.getFont().getName(), Font.PLAIN, save.getFont().getSize()));
 		
-		final String DEC = "deception";
+		final String DEC = "Deception";
 		JPanel decPanel = new JPanel();
 		decPanel.setLayout(new BoxLayout(decPanel, BoxLayout.X_AXIS));
 		JLabel deception = new JLabel("Deception: " + signBonus(calcBonus(chaMod, monster.getProficiency(),
@@ -1951,7 +1850,7 @@ public class MonsterBuilder extends JSplitPane {
 		decProfBox.setSelected(monster.getSkillProficienct(DEC));
 		decExpBox.setSelected(monster.getSkillExpertise(DEC));
 		
-		final String INT = "intimidation";
+		final String INT = "Intimidation";
 		JPanel intPanel = new JPanel();
 		intPanel.setLayout(new BoxLayout(intPanel, BoxLayout.X_AXIS));
 		JLabel intimidation = new JLabel("Intimidation: " + signBonus(calcBonus(chaMod, monster.getProficiency(),
@@ -1962,7 +1861,7 @@ public class MonsterBuilder extends JSplitPane {
 		intProfBox.setSelected(monster.getSkillProficienct(INT));
 		intExpBox.setSelected(monster.getSkillExpertise(INT));
 		
-		final String PERF = "performance";
+		final String PERF = "Performance";
 		JPanel perfPanel = new JPanel();
 		perfPanel.setLayout(new BoxLayout(perfPanel, BoxLayout.X_AXIS));
 		JLabel performance = new JLabel("Performance: " + signBonus(calcBonus(chaMod, monster.getProficiency(),
@@ -1973,7 +1872,7 @@ public class MonsterBuilder extends JSplitPane {
 		perfProfBox.setSelected(monster.getSkillProficienct(PERF));
 		perfExpBox.setSelected(monster.getSkillExpertise(PERF));
 		
-		final String PERS = "persuasion";
+		final String PERS = "Persuasion";
 		JPanel persPanel = new JPanel();
 		persPanel.setLayout(new BoxLayout(persPanel, BoxLayout.X_AXIS));
 		JLabel persuasion = new JLabel("Persuasion: " + signBonus(calcBonus(chaMod, monster.getProficiency(),
@@ -2188,19 +2087,6 @@ public class MonsterBuilder extends JSplitPane {
 			}
 		});
 		
-		proficiency.getDocument().addDocumentListener(listener);
-		proficiency.addFocusListener(new FocusListener() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				listener.start();
-			}
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				listener.stop();
-			}
-		});
-		
 		chaPanel.add(cha);
 		chaPanel.add(Box.createRigidArea(VERTICAL_GAP));
 		chaPanel.add(score);
@@ -2395,7 +2281,7 @@ public class MonsterBuilder extends JSplitPane {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String message = "Enter the new name for the ability:";
-				String name = (String) JOptionPane.showInputDialog(scroll, message, "Rename monster.Ability",
+				String name = (String) JOptionPane.showInputDialog(scroll, message, "Rename Ability",
 						JOptionPane.QUESTION_MESSAGE);
 						
 						System.out.println(name);
@@ -2415,7 +2301,7 @@ public class MonsterBuilder extends JSplitPane {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int yesNo = (int) JOptionPane.showConfirmDialog(scroll, "Are you sure you wish to delete "
-					+ abilityName.getText() + "?", "Delete monster.Ability", JOptionPane.YES_NO_OPTION,
+					+ abilityName.getText() + "?", "Delete Ability", JOptionPane.YES_NO_OPTION,
 					JOptionPane.WARNING_MESSAGE);
 				
 				if (yesNo == JOptionPane.YES_OPTION) {
@@ -2493,7 +2379,7 @@ public class MonsterBuilder extends JSplitPane {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String message = "Enter the new name for the action:";
-				String name = (String) JOptionPane.showInputDialog(scroll, message, "Rename monster.Action",
+				String name = (String) JOptionPane.showInputDialog(scroll, message, "Rename Action",
 						JOptionPane.QUESTION_MESSAGE);
 						
 				if (name == null)
@@ -2511,7 +2397,7 @@ public class MonsterBuilder extends JSplitPane {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int yesNo = (int) JOptionPane.showConfirmDialog(scroll, "Are you sure you wish to delete "
-					+ actionName.getText() + "?", "Delete monster.Action", JOptionPane.YES_NO_OPTION,
+					+ actionName.getText() + "?", "Delete Action", JOptionPane.YES_NO_OPTION,
 					JOptionPane.WARNING_MESSAGE);
 				
 				if (yesNo == JOptionPane.YES_OPTION) {
@@ -2576,7 +2462,7 @@ public class MonsterBuilder extends JSplitPane {
 		countPanel.setLayout(new BoxLayout(countPanel, BoxLayout.X_AXIS));
 		countPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		countPanel.setMaximumSize(new Dimension(INNER_WIDTH, INNER_HEIGHT));
-		JLabel countLabel = new JLabel("Legendary monster.Action Count");
+		JLabel countLabel = new JLabel("Legendary Action Count");
 		countLabel.setFont(new Font(countLabel.getFont().getName(), Font.BOLD, countLabel.getFont().getSize()));
 		JTextField count = new JTextField(monster.getLegendaryActionCount());
 		
@@ -2627,7 +2513,7 @@ public class MonsterBuilder extends JSplitPane {
 			public void actionPerformed(ActionEvent e) {
 				String message = "Enter the new name for the legendary action:";
 				String name;
-				name = (String) JOptionPane.showInputDialog(scroll, message, "Rename Legendary monster.Action",
+				name = (String) JOptionPane.showInputDialog(scroll, message, "Rename Legendary Action",
 						JOptionPane.QUESTION_MESSAGE);
 						
 				if (name == null)
@@ -2645,7 +2531,7 @@ public class MonsterBuilder extends JSplitPane {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int yesNo = (int) JOptionPane.showConfirmDialog(scroll, "Are you sure you wish to delete "
-					+ legendaryName.getText() + "?", "Delete Legendary monster.Action", JOptionPane.YES_NO_OPTION,
+					+ legendaryName.getText() + "?", "Delete Legendary Action", JOptionPane.YES_NO_OPTION,
 					JOptionPane.WARNING_MESSAGE);
 				
 				if (yesNo == JOptionPane.YES_OPTION) {
@@ -2704,16 +2590,18 @@ public class MonsterBuilder extends JSplitPane {
 			return;
 			
 		//update current monster on server before getting new monster info
-		if (!list.isSelectionEmpty())
+		if (list.isSelectionEmpty()) {
 			proxy.updateMonster(monster);
+		}
 		
 		getMonster(getLastSelected());
 	}
 	
 	//Stringify last selected value of JList
 	public String getLastSelected() {
-		if (list.isSelectionEmpty())
+		if (list.isSelectionEmpty()) {
 			return "select a monster";
+		}
 			
 		return list.getSelectedValue().toString();
 	}
