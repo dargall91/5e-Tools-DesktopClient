@@ -7,7 +7,6 @@ import java.util.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import player.PlayerData;
 
 public class Encounter {
 	private String name;
@@ -341,7 +340,7 @@ public class Encounter {
 		String result = "{}";
 		
 		try {
-			result = toJson().toString(4);
+			result = toJson().toString();
 		} catch (Exception e) {
 			System.out.println("Error in Encounter.toJsonString: " + e.getMessage());
 		}

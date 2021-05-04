@@ -342,7 +342,7 @@ public class DNDLibraryImpl implements DNDLibrary {
 		String result = "[]";
 		
 		try {
-			result = playerCharactersToJson().toString(4);
+			result = playerCharactersToJson().toString();
 		} catch (Exception e) {
 			System.out.println("Error in library.DNDLibrary.playerCharactersToJsonString: " + e.getMessage());
 		}

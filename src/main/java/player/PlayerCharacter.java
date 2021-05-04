@@ -5,6 +5,12 @@ import org.json.simple.JSONObject;
 public class PlayerCharacter {
 	private String name;
 	private int bonus, ac;
+
+	public PlayerCharacter() {
+		name = "Name";
+		bonus = 0;
+		ac = 0;
+	}
 	
 	public PlayerCharacter(String name) {
 		this.name = name;
