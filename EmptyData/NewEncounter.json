@@ -1,0 +1,10 @@
+{
+    "name": "select an encounter",
+    "monsterData": [],
+    "playerData": [{
+            "level": 1,
+            "players": 1
+        }],
+    "theme": "Behold the Bearer of Light.mp3",
+    "lairAction": false
+}
