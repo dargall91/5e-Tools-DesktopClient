@@ -71,7 +71,7 @@ public class Monster {
 			reader = new FileReader("Monsters/" + name + ".json", Charset.forName("UTF-8"));
 
 			//if (in == null)
-			//		in = new FileInputStream(new File("EmptyData/NewMonster.json"));
+			//		in = new FileInputStream(new File("Encounters/" + name + ">json"));
 
 			JSONParser parser = new JSONParser();
 
