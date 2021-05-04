@@ -100,7 +100,7 @@ public class DNDClientProxy implements DNDLibrary {
 			e.printStackTrace();
 			return new Encounter();
 		}
-		return new Encounter((String) jsonResult.get("result"));
+		return new Encounter((JSONObject) jsonResult.get("result"));
 	}
 	
 	public PlayerCharacter getPlayerCharacter(String name) {

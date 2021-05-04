@@ -18,8 +18,8 @@ public class MonsterBuilder extends JSplitPane {
 	private ArrayList<Ability> abilityList;
 	private ArrayList<Action> actionList;
 	private ArrayList<LegendaryAction> legendaryList;
-	private final int HEIGHT = 550;
-	private final int LEFT_WIDTH = 150;
+	private final int HEIGHT = 1000;
+	private final int LEFT_WIDTH = 300;
 	private final int RIGHT_WIDTH = 1075;
 	private final int INNER_WIDTH = 1050;
 	private final int INNER_HEIGHT = 20;
@@ -37,7 +37,7 @@ public class MonsterBuilder extends JSplitPane {
 	}
 	
 	/**
-	 * Initializes the inital layout of the MonsterBuilder tab
+	 * Initializes the initial layout of the MonsterBuilder tab
 	 */
 	private void initialize() {
 		setOrientation(JSplitPane.HORIZONTAL_SPLIT);
