@@ -2,7 +2,7 @@ package client;
 
 import encounter.*;
 import monster.Monster;
-import monster.MonsterData;
+import encounter.MonsterData;
 import player.PlayerData;
 import java.util.ArrayList;
 import java.awt.event.*;

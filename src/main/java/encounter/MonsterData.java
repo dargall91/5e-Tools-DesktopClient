@@ -1,4 +1,4 @@
-package monster;
+package encounter;
 
 import org.json.simple.JSONObject;
 
@@ -16,7 +16,7 @@ public class MonsterData {
 			reinforcement = (boolean) json.get("reinforcement");
 			initiative = (int) (long) json.get("initiative");
 		} catch (Exception e) {
-			System.out.println("Error in monster.MonsterData(json) " + e.getMessage());
+			System.out.println("Error in encounter.MonsterData(json) " + e.getMessage());
 		}
 	}
 	
@@ -92,7 +92,7 @@ public class MonsterData {
 			obj.put("reinforcement", reinforcement);
 			obj.put("initiative", initiative);
 		} catch (Exception e) {
-			System.out.println("Error in monster.MonsterData.toJson: " + e.getMessage());
+			System.out.println("Error in encounter.MonsterData.toJson: " + e.getMessage());
 		}
 		
 		return obj;
