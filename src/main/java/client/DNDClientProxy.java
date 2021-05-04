@@ -37,7 +37,7 @@ public class DNDClientProxy implements DNDLibrary {
 				list.add(params[i]);
 
 			JSONArray jsonParams = new JSONArray();
-			jsonParams.add(list);
+			jsonParams.addAll(list);
 			call.put("params", jsonParams);
 
 			Socket sock = new Socket(host, port);
@@ -85,7 +85,7 @@ public class DNDClientProxy implements DNDLibrary {
 			return new Monster();
 		}
 		
-		return new Monster((String) jsonResult.get("result"));
+		return new Monster((JSONObject) jsonResult.get("result"));
 	}
 	
 	public Encounter getEncounter(String name) {
@@ -100,7 +100,7 @@ public class DNDClientProxy implements DNDLibrary {
 			e.printStackTrace();
 			return new Encounter();
 		}
-		return new Encounter((String) jsonResult.get("result"));
+		return new Encounter((JSONObject) jsonResult.get("result"));
 	}
 	
 	public PlayerCharacter getPlayerCharacter(String name) {

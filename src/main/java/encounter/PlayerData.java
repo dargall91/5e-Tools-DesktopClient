@@ -8,10 +8,10 @@ public class PlayerData {
 	
 	public PlayerData(JSONObject json) {
 		try {
-			players = (int) (double) json.get("players");
-			level = (int) (double) json.get("level");
+			players = (int) (long) json.get("players");
+			level = (int) (long) json.get("level");
 		} catch (Exception e) {
-			System.out.println("Error in encounter.PlayerData(json): " + e.getMessage());
+			System.out.println("Error in PlayerData(json): " + e.getMessage());
 		}
 	}
 	
