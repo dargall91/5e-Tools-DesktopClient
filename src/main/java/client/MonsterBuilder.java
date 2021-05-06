@@ -28,6 +28,37 @@ public class MonsterBuilder extends JSplitPane {
 	private final Dimension HORIZONTAL_GAP = new Dimension(5, 0);
 	private final Integer[] scores = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
 			13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
+	private final String[] crs = { "-1", "0", "1/8", "1/4", "1/2", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
+			"13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30" };
+	private final String STR = "STR";
+	private final String ATH = "Athletics";
+	private final String DEX = "DEX";
+	private final String ACRO = "Acrobatics";
+	private final String HAND = "Sleight of Hand";
+	private final String STE = "Stealth";
+	private final String CON = "CON";
+	private final String INT = "INT";
+	private final String ARC = "Arcana";
+	private final String HIS = "History";
+	private final String INV = "Investigation";
+	private final String NAT = "Nature";
+	private final String REL = "Religion";
+	private final String WIS = "WIS";
+	private final String ANI = "Animal Handling";
+	private final String INS = "Insight";
+	private final String MED = "Medicine";
+	private final String PER = "Perception";
+	private final String SUR = "Survival";
+	private final String CHA = "CHA";
+	private final String DEC = "Deception";
+	private final String INTIM = "Intimidation";
+	private final String PERF = "Performance";
+	private final String PERS = "Persuasion";
+	private JLabel strSave, athletics, dexSave, acrobatics, hand, stealth, conSave, intSave, arcana, history,
+			investigation, nature, religion, wisSave, animal, insight, medicine, perception, survival, chaSave,
+			deception, intimidation, performance, persuasion;
+	private JCheckBox strSaveBox, dexSaveBox, conSaveBox, intSaveBox, wisSaveBox, chaSaveBox;
+
 
 	/**
 	 * Builds the MonsterBuilder tab
@@ -509,8 +540,6 @@ public class MonsterBuilder extends JSplitPane {
 	 * skills and saves
 	 */
 	private JPanel getStr() {
-		final String STR = "STR";
-		
 		JPanel strPanel = new JPanel();
 		strPanel.setMinimumSize(scorePanelSize);
 		strPanel.setPreferredSize(scorePanelSize);
@@ -532,15 +561,14 @@ public class MonsterBuilder extends JSplitPane {
 		
 		JPanel savePanel = new JPanel();
 		savePanel.setLayout(new BoxLayout(savePanel, BoxLayout.X_AXIS));
-		JCheckBox saveBox = new JCheckBox();
-		saveBox.setSelected(monster.getAbilityProficiency(STR));
-		JLabel save = new JLabel();
-		save.setFont(new Font(save.getFont().getName(), Font.PLAIN, save.getFont().getSize()));
-	
-		final String ATH = "Athletics";
+		strSaveBox = new JCheckBox();
+		strSaveBox.setSelected(monster.getAbilityProficiency(STR));
+		strSave = new JLabel();
+		strSave.setFont(new Font(strSave.getFont().getName(), Font.PLAIN, strSave.getFont().getSize()));
+
 		JPanel athPanel = new JPanel();
 		athPanel.setLayout(new BoxLayout(athPanel, BoxLayout.X_AXIS));
-		JLabel athletics = new JLabel();
+		athletics = new JLabel();
 		athletics.setFont(new Font(athletics.getFont().getName(), Font.PLAIN, athletics.getFont().getSize()));
 		JCheckBox athProfBox = new JCheckBox();
 		JCheckBox athExpBox = new JCheckBox();
@@ -552,14 +580,14 @@ public class MonsterBuilder extends JSplitPane {
 			public void actionPerformed(ActionEvent e) {
 				monster.setAbilityScore(STR, (Integer) score.getSelectedItem());
 				updateAbilityModifier(mod, STR);
-				updateSavingThrow(save, saveBox, STR);
+				updateSavingThrow(strSave, strSaveBox, STR);
 				updateSkillText(athletics, STR, ATH);
 			}
 		});
 
-		saveBox.addItemListener(new ItemListener() {
+		strSaveBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				updateSavingThrow(save, saveBox, STR);
+				updateSavingThrow(strSave, strSaveBox, STR);
 			}
 		});
 
@@ -574,8 +602,8 @@ public class MonsterBuilder extends JSplitPane {
 		strPanel.add(Box.createRigidArea(VERTICAL_GAP));
 		strPanel.add(mod);
 		
-		savePanel.add(saveBox);
-		savePanel.add(save);
+		savePanel.add(strSaveBox);
+		savePanel.add(strSave);
 		strPanel.add(savePanel);
 		
 		athPanel.add(athExpBox);
@@ -593,8 +621,6 @@ public class MonsterBuilder extends JSplitPane {
 	 * skills and saves
 	 */
 	private JPanel getDex() {
-		final String DEX = "DEX";
-		
 		JPanel dexPanel = new JPanel();
 		dexPanel.setMinimumSize(scorePanelSize);
 		dexPanel.setPreferredSize(scorePanelSize);
@@ -616,35 +642,32 @@ public class MonsterBuilder extends JSplitPane {
 		
 		JPanel savePanel = new JPanel();
 		savePanel.setLayout(new BoxLayout(savePanel, BoxLayout.X_AXIS));
-		JCheckBox saveBox = new JCheckBox();
-		saveBox.setSelected(monster.getAbilityProficiency(DEX));
-		JLabel save = new JLabel();
-		save.setFont(new Font(save.getFont().getName(), Font.PLAIN, save.getFont().getSize()));
-		
-		final String ACRO = "Acrobatics";
+		dexSaveBox = new JCheckBox();
+		dexSaveBox.setSelected(monster.getAbilityProficiency(DEX));
+		dexSave = new JLabel();
+		dexSave.setFont(new Font(dexSave.getFont().getName(), Font.PLAIN, dexSave.getFont().getSize()));
+
 		JPanel acroPanel = new JPanel();
 		acroPanel.setLayout(new BoxLayout(acroPanel, BoxLayout.X_AXIS));
-		JLabel acrobatics = new JLabel();
+		acrobatics = new JLabel();
 		acrobatics.setFont(new Font(acrobatics.getFont().getName(), Font.PLAIN, acrobatics.getFont().getSize()));
 		JCheckBox acroProfBox = new JCheckBox();
 		JCheckBox acroExpBox = new JCheckBox();
 		acroProfBox.setSelected(monster.getSkillProficienct(ACRO));
 		acroExpBox.setSelected(monster.getSkillExpertise(ACRO));
-		
-		final String HAND = "Sleight of Hand";
+
 		JPanel handPanel = new JPanel();
 		handPanel.setLayout(new BoxLayout(handPanel, BoxLayout.X_AXIS));
-		JLabel hand = new JLabel();
+		hand = new JLabel();
 		hand.setFont(new Font(hand.getFont().getName(), Font.PLAIN, hand.getFont().getSize()));
 		JCheckBox handProfBox = new JCheckBox();
 		JCheckBox handExpBox = new JCheckBox();
 		handProfBox.setSelected(monster.getSkillProficienct(HAND));
 		handExpBox.setSelected(monster.getSkillExpertise(HAND));
-		
-		final String STE = "Stealth";
+
 		JPanel stePanel = new JPanel();
 		stePanel.setLayout(new BoxLayout(stePanel, BoxLayout.X_AXIS));
-		JLabel stealth = new JLabel();
+		stealth = new JLabel();
 		stealth.setFont(new Font(stealth.getFont().getName(), Font.PLAIN, stealth.getFont().getSize()));
 		JCheckBox steProfBox = new JCheckBox();
 		JCheckBox steExpBox = new JCheckBox();
@@ -656,7 +679,7 @@ public class MonsterBuilder extends JSplitPane {
 			public void actionPerformed(ActionEvent e) {
 				monster.setAbilityScore(DEX, (Integer) score.getSelectedItem());
 				updateAbilityModifier(mod, DEX);
-				updateSavingThrow(save, saveBox, DEX);
+				updateSavingThrow(dexSave, dexSaveBox, DEX);
 				updateSkillText(acrobatics, DEX, ACRO);
 				updateSkillText(hand, DEX, HAND);
 				updateSkillText(stealth, DEX, STE);
@@ -664,9 +687,9 @@ public class MonsterBuilder extends JSplitPane {
 		});
 
 		//saving throw checkbox listener
-		saveBox.addItemListener(new ItemListener() {
+		dexSaveBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				updateSavingThrow(save, saveBox, DEX);
+				updateSavingThrow(dexSave, dexSaveBox, DEX);
 			}
 		});
 
@@ -687,8 +710,8 @@ public class MonsterBuilder extends JSplitPane {
 		dexPanel.add(Box.createRigidArea(VERTICAL_GAP));
 		dexPanel.add(mod);
 		
-		savePanel.add(saveBox);
-		savePanel.add(save);
+		savePanel.add(dexSaveBox);
+		savePanel.add(dexSave);
 		dexPanel.add(savePanel);
 		
 		acroPanel.add(acroExpBox);
@@ -718,8 +741,6 @@ public class MonsterBuilder extends JSplitPane {
 	 * skills and saves
 	 */
 	private JPanel getCon() {
-		final String CON = "CON";
-		
 		JPanel conPanel = new JPanel();
 		conPanel.setMinimumSize(scorePanelSize);
 		conPanel.setPreferredSize(scorePanelSize);
@@ -741,24 +762,24 @@ public class MonsterBuilder extends JSplitPane {
 		
 		JPanel savePanel = new JPanel();
 		savePanel.setLayout(new BoxLayout(savePanel, BoxLayout.X_AXIS));
-		JCheckBox saveBox = new JCheckBox();
-		saveBox.setSelected(monster.getAbilityProficiency(CON));
-		JLabel save = new JLabel();
-		save.setFont(new Font(save.getFont().getName(), Font.PLAIN, save.getFont().getSize()));
+		conSaveBox = new JCheckBox();
+		conSaveBox.setSelected(monster.getAbilityProficiency(CON));
+		conSave = new JLabel();
+		conSave.setFont(new Font(conSave.getFont().getName(), Font.PLAIN, conSave.getFont().getSize()));
 
 		score.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				monster.setAbilityScore(CON, (Integer) score.getSelectedItem());
 				updateAbilityModifier(mod, CON);
-				updateSavingThrow(save, saveBox, CON);
+				updateSavingThrow(conSave, conSaveBox, CON);
 			}
 		});
 
 		//saving throw checkbox listener
-		saveBox.addItemListener(new ItemListener() {
+		conSaveBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				updateSavingThrow(save, saveBox, CON);
+				updateSavingThrow(conSave, conSaveBox, CON);
 			}
 		});
 
@@ -770,8 +791,8 @@ public class MonsterBuilder extends JSplitPane {
 		conPanel.add(Box.createRigidArea(VERTICAL_GAP));
 		conPanel.add(mod);
 		
-		savePanel.add(saveBox);
-		savePanel.add(save);
+		savePanel.add(conSaveBox);
+		savePanel.add(conSave);
 		conPanel.add(savePanel);
 		
 		return conPanel;
@@ -784,8 +805,6 @@ public class MonsterBuilder extends JSplitPane {
 	 * skills and saves
 	 */
 	private JPanel getInt() {
-		final String INT = "INT";
-		
 		JPanel intPanel = new JPanel();
 		intPanel.setMinimumSize(scorePanelSize);
 		intPanel.setPreferredSize(scorePanelSize);
@@ -807,55 +826,50 @@ public class MonsterBuilder extends JSplitPane {
 		
 		JPanel savePanel = new JPanel();
 		savePanel.setLayout(new BoxLayout(savePanel, BoxLayout.X_AXIS));
-		JCheckBox saveBox = new JCheckBox();
-		saveBox.setSelected(monster.getAbilityProficiency(INT));
-		JLabel save = new JLabel();
-		save.setFont(new Font(save.getFont().getName(), Font.PLAIN, save.getFont().getSize()));
-		
-		final String ARC = "Arcana";
+		intSaveBox = new JCheckBox();
+		intSaveBox.setSelected(monster.getAbilityProficiency(INT));
+		intSave = new JLabel();
+		intSave.setFont(new Font(intSave.getFont().getName(), Font.PLAIN, intSave.getFont().getSize()));
+
 		JPanel arcPanel = new JPanel();
 		arcPanel.setLayout(new BoxLayout(arcPanel, BoxLayout.X_AXIS));
-		JLabel arcana = new JLabel();
+		arcana = new JLabel();
 		arcana.setFont(new Font(arcana.getFont().getName(), Font.PLAIN, arcana.getFont().getSize()));
 		JCheckBox arcProfBox = new JCheckBox();
 		JCheckBox arcExpBox = new JCheckBox();
 		arcProfBox.setSelected(monster.getSkillProficienct(ARC));
 		arcExpBox.setSelected(monster.getSkillExpertise(ARC));
-		
-		final String HIS = "History";
+
 		JPanel hisPanel = new JPanel();
 		hisPanel.setLayout(new BoxLayout(hisPanel, BoxLayout.X_AXIS));
-		JLabel history = new JLabel();
+		history = new JLabel();
 		history.setFont(new Font(history.getFont().getName(), Font.PLAIN, history.getFont().getSize()));
 		JCheckBox hisProfBox = new JCheckBox();
 		JCheckBox hisExpBox = new JCheckBox();
 		hisProfBox.setSelected(monster.getSkillProficienct(HIS));
 		hisExpBox.setSelected(monster.getSkillExpertise(HIS));
-		
-		final String INV = "Investigation";
+
 		JPanel invPanel = new JPanel();
 		invPanel.setLayout(new BoxLayout(invPanel, BoxLayout.X_AXIS));
-		JLabel investigation = new JLabel();
+		investigation = new JLabel();
 		investigation.setFont(new Font(investigation.getFont().getName(), Font.PLAIN, investigation.getFont().getSize()));
 		JCheckBox invProfBox = new JCheckBox();
 		JCheckBox invExpBox = new JCheckBox();
 		invProfBox.setSelected(monster.getSkillProficienct(INV));
 		invExpBox.setSelected(monster.getSkillExpertise(INV));
-		
-		final String NAT = "Nature";
+
 		JPanel natPanel = new JPanel();
 		natPanel.setLayout(new BoxLayout(natPanel, BoxLayout.X_AXIS));
-		JLabel nature = new JLabel();
+		nature = new JLabel();
 		nature.setFont(new Font(nature.getFont().getName(), Font.PLAIN, nature.getFont().getSize()));
 		JCheckBox natProfBox = new JCheckBox();
 		JCheckBox natExpBox = new JCheckBox();
 		natProfBox.setSelected(monster.getSkillProficienct(NAT));
 		natExpBox.setSelected(monster.getSkillExpertise(NAT));
-		
-		final String REL = "Religion";
+
 		JPanel relPanel = new JPanel();
 		relPanel.setLayout(new BoxLayout(relPanel, BoxLayout.X_AXIS));
-		JLabel religion = new JLabel();
+		religion = new JLabel();
 		religion.setFont(new Font(religion.getFont().getName(), Font.PLAIN, religion.getFont().getSize()));
 		JCheckBox relProfBox = new JCheckBox();
 		JCheckBox relExpBox = new JCheckBox();
@@ -867,7 +881,7 @@ public class MonsterBuilder extends JSplitPane {
 			public void actionPerformed(ActionEvent e) {
 				monster.setAbilityScore(INT, (Integer) score.getSelectedItem());
 				updateAbilityModifier(mod, INT);
-				updateSavingThrow(save, saveBox, INT);
+				updateSavingThrow(intSave, intSaveBox, INT);
 				updateSkillText(arcana, INT, ARC);
 				updateSkillText(history, INT, HIS);
 				updateSkillText(investigation, INT, INV);
@@ -877,9 +891,9 @@ public class MonsterBuilder extends JSplitPane {
 		});
 
 		//saving throw checkbox listener
-		saveBox.addItemListener(new ItemListener() {
+		intSaveBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				updateSavingThrow(save, saveBox, INT);
+				updateSavingThrow(intSave, intSaveBox, INT);
 			}
 		});
 
@@ -906,8 +920,8 @@ public class MonsterBuilder extends JSplitPane {
 		intPanel.add(Box.createRigidArea(VERTICAL_GAP));
 		intPanel.add(mod);
 		
-		savePanel.add(saveBox);
-		savePanel.add(save);
+		savePanel.add(intSaveBox);
+		savePanel.add(intSave);
 		intPanel.add(savePanel);
 		
 		arcPanel.add(arcExpBox);
@@ -949,8 +963,6 @@ public class MonsterBuilder extends JSplitPane {
 	 * skills and saves
 	 */
 	private JPanel getWis() {
-		final String WIS = "WIS";
-		
 		JPanel wisPanel = new JPanel();
 		wisPanel.setMinimumSize(scorePanelSize);
 		wisPanel.setPreferredSize(scorePanelSize);
@@ -972,55 +984,50 @@ public class MonsterBuilder extends JSplitPane {
 		
 		JPanel savePanel = new JPanel();
 		savePanel.setLayout(new BoxLayout(savePanel, BoxLayout.X_AXIS));
-		JCheckBox saveBox = new JCheckBox();
-		saveBox.setSelected(monster.getAbilityProficiency(WIS));
-		JLabel save = new JLabel();
-		save.setFont(new Font(save.getFont().getName(), Font.PLAIN, save.getFont().getSize()));
-		
-		final String ANI = "Animal Handling";
+		wisSaveBox = new JCheckBox();
+		wisSaveBox.setSelected(monster.getAbilityProficiency(WIS));
+		wisSave = new JLabel();
+		wisSave.setFont(new Font(wisSave.getFont().getName(), Font.PLAIN, wisSave.getFont().getSize()));
+
 		JPanel aniPanel = new JPanel();
 		aniPanel.setLayout(new BoxLayout(aniPanel, BoxLayout.X_AXIS));
-		JLabel animal = new JLabel();
+		animal = new JLabel();
 		animal.setFont(new Font(animal.getFont().getName(), Font.PLAIN, animal.getFont().getSize()));
 		JCheckBox aniProfBox = new JCheckBox();
 		JCheckBox aniExpBox = new JCheckBox();
 		aniProfBox.setSelected(monster.getSkillProficienct(ANI));
 		aniExpBox.setSelected(monster.getSkillExpertise(ANI));
-		
-		final String INS = "Insight";
+
 		JPanel insPanel = new JPanel();
 		insPanel.setLayout(new BoxLayout(insPanel, BoxLayout.X_AXIS));
-		JLabel insight = new JLabel();
+		insight = new JLabel();
 		insight.setFont(new Font(insight.getFont().getName(), Font.PLAIN, insight.getFont().getSize()));
 		JCheckBox insProfBox = new JCheckBox();
 		JCheckBox insExpBox = new JCheckBox();
 		insProfBox.setSelected(monster.getSkillProficienct(INS));
 		insExpBox.setSelected(monster.getSkillExpertise(INS));
-		
-		final String MED = "Medicine";
+
 		JPanel medPanel = new JPanel();
 		medPanel.setLayout(new BoxLayout(medPanel, BoxLayout.X_AXIS));
-		JLabel medicine = new JLabel();
+		medicine = new JLabel();
 		medicine.setFont(new Font(medicine.getFont().getName(), Font.PLAIN, medicine.getFont().getSize()));
 		JCheckBox medProfBox = new JCheckBox();
 		JCheckBox medExpBox = new JCheckBox();
 		medProfBox.setSelected(monster.getSkillProficienct(MED));
 		medExpBox.setSelected(monster.getSkillExpertise(MED));
-		
-		final String PER = "Perception";
+
 		JPanel perPanel = new JPanel();
 		perPanel.setLayout(new BoxLayout(perPanel, BoxLayout.X_AXIS));
-		JLabel perception = new JLabel();
+		perception = new JLabel();
 		perception.setFont(new Font(perception.getFont().getName(), Font.PLAIN, perception.getFont().getSize()));
 		JCheckBox perProfBox = new JCheckBox();
 		JCheckBox perExpBox = new JCheckBox();
 		perProfBox.setSelected(monster.getSkillProficienct(PER));
 		perExpBox.setSelected(monster.getSkillExpertise(PER));
-		
-		final String SUR = "Survival";
+
 		JPanel surPanel = new JPanel();
 		surPanel.setLayout(new BoxLayout(surPanel, BoxLayout.X_AXIS));
-		JLabel survival = new JLabel();
+		survival = new JLabel();
 		survival.setFont(new Font(survival.getFont().getName(), Font.PLAIN, survival.getFont().getSize()));
 		JCheckBox surProfBox = new JCheckBox();
 		JCheckBox surExpBox = new JCheckBox();
@@ -1032,7 +1039,7 @@ public class MonsterBuilder extends JSplitPane {
 			public void actionPerformed(ActionEvent e) {
 				monster.setAbilityScore(WIS, (Integer) score.getSelectedItem());
 				updateAbilityModifier(mod, WIS);
-				updateSavingThrow(save, saveBox, WIS);
+				updateSavingThrow(wisSave, wisSaveBox, WIS);
 				updateSkillText(animal, WIS, ANI);
 				updateSkillText(insight, WIS, INS);
 				updateSkillText(medicine, WIS, MED);
@@ -1042,9 +1049,9 @@ public class MonsterBuilder extends JSplitPane {
 		});
 
 		//saving throw checkbox listener
-		saveBox.addItemListener(new ItemListener() {
+		wisSaveBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				updateSavingThrow(save, saveBox, WIS);
+				updateSavingThrow(wisSave, wisSaveBox, WIS);
 			}
 		});
 
@@ -1071,8 +1078,8 @@ public class MonsterBuilder extends JSplitPane {
 		wisPanel.add(Box.createRigidArea(VERTICAL_GAP));
 		wisPanel.add(mod);
 		
-		savePanel.add(saveBox);
-		savePanel.add(save);
+		savePanel.add(wisSaveBox);
+		savePanel.add(wisSave);
 		wisPanel.add(savePanel);
 		
 		aniPanel.add(aniExpBox);
@@ -1114,8 +1121,6 @@ public class MonsterBuilder extends JSplitPane {
 	 * skills and saves
 	 */
 	private JPanel getCha() {
-		final String CHA = "CHA";
-		
 		JPanel chaPanel = new JPanel();
 		chaPanel.setMinimumSize(scorePanelSize);
 		chaPanel.setPreferredSize(scorePanelSize);
@@ -1137,45 +1142,41 @@ public class MonsterBuilder extends JSplitPane {
 		
 		JPanel savePanel = new JPanel();
 		savePanel.setLayout(new BoxLayout(savePanel, BoxLayout.X_AXIS));
-		JCheckBox saveBox = new JCheckBox();
-		saveBox.setSelected(monster.getAbilityProficiency(CHA));
-		JLabel save = new JLabel();
-		save.setFont(new Font(save.getFont().getName(), Font.PLAIN, save.getFont().getSize()));
-		
-		final String DEC = "Deception";
+		chaSaveBox = new JCheckBox();
+		chaSaveBox.setSelected(monster.getAbilityProficiency(CHA));
+		chaSave = new JLabel();
+		chaSave.setFont(new Font(chaSave.getFont().getName(), Font.PLAIN, chaSave.getFont().getSize()));
+
 		JPanel decPanel = new JPanel();
 		decPanel.setLayout(new BoxLayout(decPanel, BoxLayout.X_AXIS));
-		JLabel deception = new JLabel();
+		deception = new JLabel();
 		deception.setFont(new Font(deception.getFont().getName(), Font.PLAIN, deception.getFont().getSize()));
 		JCheckBox decProfBox = new JCheckBox();
 		JCheckBox decExpBox = new JCheckBox();
 		decProfBox.setSelected(monster.getSkillProficienct(DEC));
 		decExpBox.setSelected(monster.getSkillExpertise(DEC));
-		
-		final String INT = "Intimidation";
+
 		JPanel intPanel = new JPanel();
 		intPanel.setLayout(new BoxLayout(intPanel, BoxLayout.X_AXIS));
-		JLabel intimidation = new JLabel();
+		intimidation = new JLabel();
 		intimidation.setFont(new Font(intimidation.getFont().getName(), Font.PLAIN, intimidation.getFont().getSize()));
 		JCheckBox intProfBox = new JCheckBox();
 		JCheckBox intExpBox = new JCheckBox();
-		intProfBox.setSelected(monster.getSkillProficienct(INT));
-		intExpBox.setSelected(monster.getSkillExpertise(INT));
-		
-		final String PERF = "Performance";
+		intProfBox.setSelected(monster.getSkillProficienct(INTIM));
+		intExpBox.setSelected(monster.getSkillExpertise(INTIM));
+
 		JPanel perfPanel = new JPanel();
 		perfPanel.setLayout(new BoxLayout(perfPanel, BoxLayout.X_AXIS));
-		JLabel performance = new JLabel();
+		performance = new JLabel();
 		performance.setFont(new Font(performance.getFont().getName(), Font.PLAIN, performance.getFont().getSize()));
 		JCheckBox perfProfBox = new JCheckBox();
 		JCheckBox perfExpBox = new JCheckBox();
 		perfProfBox.setSelected(monster.getSkillProficienct(PERF));
 		perfExpBox.setSelected(monster.getSkillExpertise(PERF));
-		
-		final String PERS = "Persuasion";
+
 		JPanel persPanel = new JPanel();
 		persPanel.setLayout(new BoxLayout(persPanel, BoxLayout.X_AXIS));
-		JLabel persuasion = new JLabel();
+		persuasion = new JLabel();
 		persuasion.setFont(new Font(persuasion.getFont().getName(), Font.PLAIN, persuasion.getFont().getSize()));
 		JCheckBox persProfBox = new JCheckBox();
 		JCheckBox persExpBox = new JCheckBox();
@@ -1187,18 +1188,18 @@ public class MonsterBuilder extends JSplitPane {
 			public void actionPerformed(ActionEvent e) {
 				monster.setAbilityScore(CHA, (Integer) score.getSelectedItem());
 				updateAbilityModifier(mod, CHA);
-				updateSavingThrow(save, saveBox, CHA);
+				updateSavingThrow(chaSave, chaSaveBox, CHA);
 				updateSkillText(deception, CHA, DEC);
-				updateSkillText(intimidation, CHA, INT);
+				updateSkillText(intimidation, CHA, INTIM);
 				updateSkillText(performance, CHA, PERF);
 				updateSkillText(persuasion, CHA, PERS);
 			}
 		});
 
 		//saving throw checkbox listener
-		saveBox.addItemListener(new ItemListener() {
+		chaSaveBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				updateSavingThrow(save, saveBox, CHA);
+				updateSavingThrow(chaSave, chaSaveBox, CHA);
 			}
 		});
 
@@ -1207,8 +1208,8 @@ public class MonsterBuilder extends JSplitPane {
 		decProfBox.addItemListener(new ProficiencyListener(decProfBox, decExpBox, deception, CHA, DEC));
 		decExpBox.addItemListener(new ExpertiseListener(decProfBox, decExpBox, deception, CHA, DEC));
 
-		intProfBox.addItemListener(new ProficiencyListener(intProfBox, intExpBox, intimidation, CHA, INT));
-		intExpBox.addItemListener(new ExpertiseListener(intProfBox, intExpBox, intimidation, CHA, INT));
+		intProfBox.addItemListener(new ProficiencyListener(intProfBox, intExpBox, intimidation, CHA, INTIM));
+		intExpBox.addItemListener(new ExpertiseListener(intProfBox, intExpBox, intimidation, CHA, INTIM));
 
 		perfProfBox.addItemListener(new ProficiencyListener(perfProfBox, perfExpBox, performance, CHA, PERF));
 		perfExpBox.addItemListener(new ExpertiseListener(perfProfBox, perfExpBox, performance, CHA, PERF));
@@ -1222,8 +1223,8 @@ public class MonsterBuilder extends JSplitPane {
 		chaPanel.add(Box.createRigidArea(VERTICAL_GAP));
 		chaPanel.add(mod);
 		
-		savePanel.add(saveBox);
-		savePanel.add(save);
+		savePanel.add(chaSaveBox);
+		savePanel.add(chaSave);
 		chaPanel.add(savePanel);
 		
 		decPanel.add(decExpBox);
@@ -1340,43 +1341,59 @@ public class MonsterBuilder extends JSplitPane {
 		return languagePanel;
 	}
 
+	//TODO: update challenge to use a JComboBox
 	private JPanel getChallengePanel() {
 		JPanel challengePanel = new JPanel();
 		challengePanel.setLayout(new BoxLayout(challengePanel, BoxLayout.X_AXIS));
 		challengePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		challengePanel.setMaximumSize(new Dimension(INNER_WIDTH, INNER_HEIGHT));
 		JLabel challengeLabel = new JLabel("Challenge");
-		challengeLabel.setFont(new Font(challengeLabel.getFont().getName(), Font.BOLD, challengeLabel.getFont().getSize()));
-		JTextField challenge = new JTextField(monster.getChallenge());
-		challenge.setMaximumSize(new Dimension(30, INNER_HEIGHT));
-		JLabel xpLabel = new JLabel("(" + monster.getXP() + " XP)");
+
+		JComboBox cr = new JComboBox(crs);
+		cr.setMaximumSize(new Dimension(45, 20));
+		cr.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		JLabel xpLabel = new JLabel();
 		xpLabel.setFont(new Font(xpLabel.getFont().getName(), Font.ITALIC, xpLabel.getFont().getSize()));
-		
-		DeferredDocumentListener listener = new DeferredDocumentListener (new ActionListener() {
+
+		cr.addItemListener(new ItemListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				monster.setChallenge(challenge.getText());
-				xpLabel.setText("(" + monster.getXP() + " XP)");
-				proxy.updateMonster(monster); //updates xp values on server for enc builder
-			}
-		});
-		
-		challenge.getDocument().addDocumentListener(listener);
-		challenge.addFocusListener(new FocusListener() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				listener.start();
-			}
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				listener.stop();
+			public void itemStateChanged(ItemEvent e) {
+				monster.setChallenge(cr.getSelectedItem().toString());
+				xpLabel.setText("(" + monster.getXP() + "XP)");
+				updateSavingThrow(strSave, strSaveBox, STR);
+				updateSkillText(athletics, STR, ATH);
+
+				updateSavingThrow(dexSave, dexSaveBox, DEX);
+				updateSkillText(acrobatics, DEX, ACRO);
+				updateSkillText(hand, DEX, HAND);
+				updateSkillText(stealth, DEX, STE);
+
+				updateSavingThrow(intSave, intSaveBox, INT);
+				updateSkillText(arcana, INT, ARC);
+				updateSkillText(history, INT, HIS);
+				updateSkillText(investigation, INT, INV);
+				updateSkillText(nature, INT, NAT);
+				updateSkillText(religion, INT, REL);
+
+				updateSavingThrow(wisSave, wisSaveBox, WIS);
+				updateSkillText(animal, WIS, ANI);
+				updateSkillText(insight, WIS, INS);
+				updateSkillText(medicine, WIS, MED);
+				updateSkillText(perception, WIS, PER);
+				updateSkillText(survival, WIS, SUR);
+
+				updateSavingThrow(chaSave, chaSaveBox, CHA);
+				updateSkillText(deception, CHA, DEC);
+				updateSkillText(intimidation, CHA, INTIM);
+				updateSkillText(performance, CHA, PERF);
+				updateSkillText(persuasion, CHA, PERS);
 			}
 		});
 		
 		challengePanel.add(challengeLabel);
 		challengePanel.add(Box.createRigidArea(HORIZONTAL_GAP));
-		challengePanel.add(challenge);
+		challengePanel.add(cr);
 		challengePanel.add(Box.createRigidArea(HORIZONTAL_GAP));
 		challengePanel.add(xpLabel);
 		
@@ -1751,36 +1768,6 @@ public class MonsterBuilder extends JSplitPane {
 		 //updates current monster info, needed for restoring
 		 monster = proxy.getMonster(monster.getName());
 	 }
-
-	 //TODO: calcBonus and signBonus no longer needed once scores are all JComboBoxes
-	 /**
-	  * cals bonus for any skill/saving throw
-	  * expertise should always be false for saving throws
-	  */
-	 private int calcBonus(int mod, int profBonus, boolean proficient, boolean expertise) {
-		 if (proficient)
-			mod += profBonus;
-			
-		if (expertise)
-			mod += profBonus;
-			
-		return mod;
-	}
-	
-	/**
-	 * stringifies bonus and signs it
-	 */
-	private String signBonus(int mod) {
-		String signed;
-		
-		if (mod < 0)
-			signed = Integer.toString(mod);
-			
-		else
-			signed = "+" + Integer.toString(mod);
-			
-		return signed;
-	}
 
 	private void updateAbilityModifier(JLabel modLabel, String stat) {
 		modLabel.setText("(" + monster.getSignedAbilityModifier(stat) + ")");
