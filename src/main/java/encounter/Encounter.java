@@ -34,16 +34,11 @@ public class Encounter {
 		FileReader reader = null;
 		
 		try {
-			//InputStream in = this.getClass().getClassLoader().getResourceAsStream("EmptyData/NewEncounter.json");
 			reader = new FileReader("EmptyData/NewEncounter.json", Charset.forName("UTF-8"));
-
-			//if (in == null)
-            //		in = new FileInputStream(new File("EmptyData/NewEncounter.json"));
 
 			JSONParser parser = new JSONParser();
 			JSONObject json = (JSONObject) parser.parse(reader);
-            		
-			//JSONObject json = new JSONObject(new JSONTokener(in));
+
 			initFromJson(json);
 		} catch (Exception e) {
 			System.out.println("Error in Encounter(): " + e.getMessage());
@@ -62,16 +57,11 @@ public class Encounter {
 		FileReader reader = null;
 
 		try {
-			//InputStream in = this.getClass().getClassLoader().getResourceAsStream("Encounters/" + name + ".json");
 			reader = new FileReader("Encounters/" + name + ".json", Charset.forName("UTF-8"));
-
-			//if (in == null)
-            //		in = new FileInputStream(new File("Encounters/" + name + ".json"));
 
 			JSONParser parser = new JSONParser();
 			JSONObject json = (JSONObject) parser.parse(reader);
-            		
-			//JSONObject json = new JSONObject(new JSONTokener(in));
+
 			initFromJson(json);
 		} catch (Exception e) {
 			System.out.println("Error in Encounter(String name): " + e.getMessage());
@@ -171,15 +161,6 @@ public class Encounter {
 		
 		else
 			monsterData.get(index).setQuantity(quantity);
-	}
-	
-	//TODO: may not be needed
-	public boolean containsMonster(String name) {
-		for (MonsterData i : monsterData)
-			if (i.getMonster().equals(name))
-				return true;
-				
-		return false;
 	}
 	
 	/**

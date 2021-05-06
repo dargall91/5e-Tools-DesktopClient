@@ -33,7 +33,6 @@ public class DNDLibraryImpl implements DNDLibrary {
 			name = fileNames[i].substring(0, Math.min(fileNames[i].length(), fileNames[i].length() - 5));
 			monLib.put(name, new Monster(name));
 		}
-		
 	}
 	
 	private void initEncLib() {
@@ -48,27 +47,13 @@ public class DNDLibraryImpl implements DNDLibrary {
 	}
 	
 	private void initPlrLib() {
-		/*File file = new File("PCs/");
-		String[] fileNames = file.list();
-		String name;
-		
-		for (int i = 0; i < fileNames.length; i++) {
-			name = fileNames[i].substring(0, Math.min(fileNames[i].length(), fileNames[i].length() - 5));
-			plrLib.put(name, new player.PlayerCharacter(name));
-		}*/
-
 		FileReader reader = null;
 
 		try {
-			//InputStream in = this.getClass().getClassLoader().getResourceAsStream("PCs/PlayerCharacters.json");
 			reader = new FileReader("PCs/PlayerCharacters.json", Charset.forName("UTF-8"));
-
-			//if (in == null)
-            //		in = new FileInputStream(new File("PCs/PlayerCharacters.json"));
 
 			JSONParser parser = new JSONParser();
 			JSONArray arr = (JSONArray) parser.parse(reader);
-			//JSONArray arr = new JSONArray(new JSONTokener(in));
 			int length = arr.size();
 			
 			for (int i = 0; i < length; i++) {
@@ -379,7 +364,7 @@ public class DNDLibraryImpl implements DNDLibrary {
 		return arr;
 	}
 	
-	//TODO: potentially private method, if change to private do not forget to remove from DNDlibrary.java and client.DNDClientProxy.java
+	//TODO: potentially private method, if change to private do not forget to remove from DNDLibrary.java and DNDClientProxy.java
 	public boolean savePlayerCharacters() {
 		boolean result = false;
 		
