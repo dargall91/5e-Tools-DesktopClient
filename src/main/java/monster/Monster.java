@@ -8,9 +8,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-//TODO: remove proficiency var, is now calculated based on CR. Update desktop GUIs to reflect this change
 //TODO: update GUIs with display name
-//TODO: update GUIs, leg action coutn now an int
+//TODO: update GUIs, leg action count now an int
 public class Monster {
 	private final String[] STATS = { "STR", "DEX", "CON", "INT", "WIS", "CHA" };
 	private String name, displayName, type, alignment, size, speed, languages, senses, ac, hp,
@@ -364,7 +363,7 @@ public class Monster {
 	}
 
 	public int getAbilityModifier(String stat) {
-		return (scores.get(stat).getScore() - 10) / 2;
+		return Math.floorDiv(scores.get(stat).getScore() - 10, 2);
 	}
 
 	public String getSignedAbilityModifier(String stat) {
@@ -374,6 +373,33 @@ public class Monster {
 			return Integer.toString(mod);
 
 		return "+" + Integer.toString(mod);
+	}
+
+	public String getSignedSkillModifier(String stat, String skill) {
+		int mod = getAbilityModifier(stat);
+
+		if (getSkillProficienct(skill))
+			mod += getProficiency();
+
+		if (getSkillExpertise(skill))
+			mod += getProficiency();
+
+		if (mod < 0)
+			return Integer.toString(mod);
+
+		return "+" + mod;
+	}
+
+	public String getSignedSavingThrow(String stat) {
+		int mod = getAbilityModifier(stat);
+
+		if (getAbilityProficiency(stat))
+			mod += getProficiency();
+
+		if (mod < 0)
+			return Integer.toString(mod);
+
+		return "+" + mod;
 	}
 	
 	public boolean getAbilityProficiency(String stat) {
@@ -398,6 +424,10 @@ public class Monster {
 	
 	//Setters
 	public void setName(String name) {
+		if (this.name.equals(displayName)) {
+			displayName = name;
+		}
+
 		this.name = name;
 	}
 
@@ -427,14 +457,14 @@ public class Monster {
 	
 	public void setSkillProficiency(String skill, boolean proficient) {
 		if (!proficient)
-			skills.get(skill).setExpertise(proficient);
+			skills.get(skill).setExpertise(false);
 		
 		skills.get(skill).setProficient(proficient);
 	}
 	
 	public void setSkillExpertise(String skill, boolean expertise) {
 		if (expertise)
-			skills.get(skill).setProficient(expertise);
+			skills.get(skill).setProficient(true);
 			
 		skills.get(skill).setExpertise(expertise);			
 	}

@@ -46,13 +46,14 @@ public class DNDClientProxy implements DNDLibrary {
 
 			String request = call.toString();
 			byte[] bytesToSend = request.getBytes();
+			System.out.println();
 			System.out.println("Request: " + request);
-			System.out.println("length: " + bytesToSend.length);
+			//System.out.println("length: " + bytesToSend.length);
 			//out.write(bytesToSend, 0, bytesToSend.length);
 			PrintWriter writer = new PrintWriter(out, true);
 			writer.println(request);
 
-			//TODO: update read to use BufferedReader to maintain consitency with server
+			//TODO: update read to use BufferedReader to maintain consistency with server
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			byte[] buffer = new byte[buffSize];
 
