@@ -70,12 +70,13 @@ public class DNDClientProxy implements DNDLibrary {
 			result = "{}";
 		}
 
+		//System.out.println("Received " + result + " from server.");
+
 		return result;
 	}
 	
 	public Monster getMonster(String name) {
 		String result = callMethod("monster", "get", new Object[]{name});
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -91,7 +92,6 @@ public class DNDClientProxy implements DNDLibrary {
 	
 	public Encounter getEncounter(String name) {
 		String result = callMethod("encounter", "get", new Object[]{name});
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -106,7 +106,6 @@ public class DNDClientProxy implements DNDLibrary {
 	
 	public PlayerCharacter getPlayerCharacter(String name) {
 		String result = callMethod("pc", "get", new Object[]{name});
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -121,7 +120,6 @@ public class DNDClientProxy implements DNDLibrary {
 	
 	public boolean addMonster(String name) {
 		String result = callMethod("monster", "add", new Object[]{name});
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -136,7 +134,6 @@ public class DNDClientProxy implements DNDLibrary {
 	
 	public boolean addEncounter(String name) {
 		String result = callMethod("encounter", "add", new Object[]{name});
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -151,7 +148,6 @@ public class DNDClientProxy implements DNDLibrary {
 	
 	public boolean addPlayerCharacter(String name) {
 		String result = callMethod("pc", "add", new Object[]{name});
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -166,7 +162,6 @@ public class DNDClientProxy implements DNDLibrary {
 	
 	public boolean deleteMonster(String name) {
 		String result = callMethod("monster", "delete", new Object[]{name});
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -181,7 +176,6 @@ public class DNDClientProxy implements DNDLibrary {
 	
 	public boolean deleteEncounter(String name) {
 		String result = callMethod("encounter", "delete", new Object[]{name});
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -196,7 +190,6 @@ public class DNDClientProxy implements DNDLibrary {
 	
 	public boolean deletePlayerCharacter(String name) {
 		String result = callMethod("pc", "delete", new Object[]{name});
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -211,7 +204,6 @@ public class DNDClientProxy implements DNDLibrary {
 	
 	public boolean renameMonster(String oldName, Monster monster) {
 		String result = callMethod("monster", "change", new Object[]{oldName, monster.toJson()});
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -225,7 +217,6 @@ public class DNDClientProxy implements DNDLibrary {
 	}
 	public boolean renameEncounter(String oldName, Encounter encounter) {
 		String result = callMethod("encounter", "change", new Object[]{oldName, encounter.toJson()});
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -240,7 +231,6 @@ public class DNDClientProxy implements DNDLibrary {
 	
 	public boolean updateMonster(Monster monster) {
 		String result = callMethod("monster", "update", new Object[]{monster.toJson()});
-		System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -255,7 +245,6 @@ public class DNDClientProxy implements DNDLibrary {
 	
 	public boolean updateEncounter(Encounter encounter) {
 		String result = callMethod("encounter", "update", new Object[]{encounter.toJson()});
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -270,7 +259,6 @@ public class DNDClientProxy implements DNDLibrary {
 	
 	public boolean updatePlayerCharacter(PlayerCharacter pc) {
 		String result = callMethod("pc", "update", new Object[]{pc.toJson()});
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -285,7 +273,6 @@ public class DNDClientProxy implements DNDLibrary {
 	 
 	public boolean restoreMonster(String name) {
 		String result = callMethod("monster", "restore", new Object[]{name});
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -300,7 +287,6 @@ public class DNDClientProxy implements DNDLibrary {
 	
 	public boolean restoreEncounter(String name) {
 		String result = callMethod("encounter", "restore", new Object[]{name});
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -357,7 +343,6 @@ public class DNDClientProxy implements DNDLibrary {
 	
 	public ArrayList<String> getPlayerCharacterList() {
 		String result = callMethod("pc", "list", new Object[0]);
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -378,7 +363,6 @@ public class DNDClientProxy implements DNDLibrary {
 	
 	public boolean saveMonster(String name) {
 		String result = callMethod("monster", "save", new Object[]{name});
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -393,7 +377,6 @@ public class DNDClientProxy implements DNDLibrary {
 	
 	public boolean saveEncounter(String name) {
 		String result = callMethod("encounter", "save", new Object[]{name});
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -428,7 +411,6 @@ public class DNDClientProxy implements DNDLibrary {
 	
 	public boolean savePlayerCharacters() {
 		String result = callMethod("pc", "save", new Object[0]);
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -443,7 +425,6 @@ public class DNDClientProxy implements DNDLibrary {
 	
 	public boolean saveAll() {
 		String result = callMethod("all", "save", new Object[0]);
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -458,7 +439,6 @@ public class DNDClientProxy implements DNDLibrary {
 
 	public boolean startEncounter(String name) {
 		String result = callMethod("combat", "begin", new Object[]{name});
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -473,7 +453,6 @@ public class DNDClientProxy implements DNDLibrary {
 
 	public boolean updateEncounter(JSONArray array) {
 		String result = callMethod("combat", "update", new Object[]{array});
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -488,7 +467,6 @@ public class DNDClientProxy implements DNDLibrary {
 
 	public boolean endEncounter() {
 		String result = callMethod("combat", "end", new Object[0]);
-		//System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
