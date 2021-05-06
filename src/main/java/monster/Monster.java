@@ -8,8 +8,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-//TODO: update GUIs with display name
-//TODO: update GUIs, leg action count now an int
 public class Monster {
 	private final String[] STATS = { "STR", "DEX", "CON", "INT", "WIS", "CHA" };
 	private String name, displayName, type, alignment, size, speed, languages, senses, ac, hp,
@@ -34,15 +32,10 @@ public class Monster {
 		FileReader reader = null;
 		
 		try {
-			//InputStream in = this.getClass().getClassLoader().getResourceAsStream("EmptyData/NewMonster.json");
 			reader = new FileReader("EmptyData/NewMonster.json", Charset.forName("UTF-8"));
-
-			//if (in == null)
-            //		in = new FileInputStream(new File("EmptyData/NewMonster.json"));
 
 			JSONParser parser = new JSONParser();
 
-			//JSONObject json = new JSONObject(new JSONTokener(in));
 			JSONObject json = (JSONObject) parser.parse(reader);
 			initFromJson(json);
 		} catch (Exception e) {
@@ -65,16 +58,10 @@ public class Monster {
 		FileReader reader = null;
 
 		try {
-			//InputStream in = this.getClass().getClassLoader().getResourceAsStream("Monsters/" + name + ".json");
-
 			reader = new FileReader("Monsters/" + name + ".json", Charset.forName("UTF-8"));
-
-			//if (in == null)
-			//		in = new FileInputStream(new File("Encounters/" + name + ">json"));
 
 			JSONParser parser = new JSONParser();
 
-			//JSONObject json = new JSONObject(new JSONTokener(in));
 			JSONObject json = (JSONObject) parser.parse(reader);
 			initFromJson(json);
 		} catch (Exception e) {
@@ -197,7 +184,7 @@ public class Monster {
 		return languages;
 	}
 	
-	public boolean getSkillProficienct(String skill) {
+	public boolean getSkillProficient(String skill) {
 		return skills.get(skill).getProficient();
 	}
 	
@@ -378,7 +365,7 @@ public class Monster {
 	public String getSignedSkillModifier(String stat, String skill) {
 		int mod = getAbilityModifier(stat);
 
-		if (getSkillProficienct(skill))
+		if (getSkillProficient(skill))
 			mod += getProficiency();
 
 		if (getSkillExpertise(skill))

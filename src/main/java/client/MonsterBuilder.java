@@ -134,6 +134,10 @@ public class MonsterBuilder extends JSplitPane {
 			}
 		});
 
+		if (monList.size() > 0) {
+			list.setSelectedIndex(0);
+		}
+
 		scroll.setViewportView(list);
 		
 		return scroll;
@@ -158,6 +162,8 @@ public class MonsterBuilder extends JSplitPane {
 		//name
 		panel.add(getNameLabel());
 		panel.add(Box.createRigidArea(VERTICAL_GAP));
+
+		//TODO: add display name panel
 		
 		if (monster.getName().equals("select a monster")) {
 			scroll.setViewportView(panel);
@@ -572,7 +578,7 @@ public class MonsterBuilder extends JSplitPane {
 		athletics.setFont(new Font(athletics.getFont().getName(), Font.PLAIN, athletics.getFont().getSize()));
 		JCheckBox athProfBox = new JCheckBox();
 		JCheckBox athExpBox = new JCheckBox();
-		athProfBox.setSelected(monster.getSkillProficienct(ATH));
+		athProfBox.setSelected(monster.getSkillProficient(ATH));
 		athExpBox.setSelected(monster.getSkillExpertise(ATH));
 
 		score.addActionListener(new ActionListener() {
@@ -653,7 +659,7 @@ public class MonsterBuilder extends JSplitPane {
 		acrobatics.setFont(new Font(acrobatics.getFont().getName(), Font.PLAIN, acrobatics.getFont().getSize()));
 		JCheckBox acroProfBox = new JCheckBox();
 		JCheckBox acroExpBox = new JCheckBox();
-		acroProfBox.setSelected(monster.getSkillProficienct(ACRO));
+		acroProfBox.setSelected(monster.getSkillProficient(ACRO));
 		acroExpBox.setSelected(monster.getSkillExpertise(ACRO));
 
 		JPanel handPanel = new JPanel();
@@ -662,7 +668,7 @@ public class MonsterBuilder extends JSplitPane {
 		hand.setFont(new Font(hand.getFont().getName(), Font.PLAIN, hand.getFont().getSize()));
 		JCheckBox handProfBox = new JCheckBox();
 		JCheckBox handExpBox = new JCheckBox();
-		handProfBox.setSelected(monster.getSkillProficienct(HAND));
+		handProfBox.setSelected(monster.getSkillProficient(HAND));
 		handExpBox.setSelected(monster.getSkillExpertise(HAND));
 
 		JPanel stePanel = new JPanel();
@@ -671,7 +677,7 @@ public class MonsterBuilder extends JSplitPane {
 		stealth.setFont(new Font(stealth.getFont().getName(), Font.PLAIN, stealth.getFont().getSize()));
 		JCheckBox steProfBox = new JCheckBox();
 		JCheckBox steExpBox = new JCheckBox();
-		steProfBox.setSelected(monster.getSkillProficienct(STE));
+		steProfBox.setSelected(monster.getSkillProficient(STE));
 		steExpBox.setSelected(monster.getSkillExpertise(STE));
 
 		score.addActionListener(new ActionListener() {
@@ -837,7 +843,7 @@ public class MonsterBuilder extends JSplitPane {
 		arcana.setFont(new Font(arcana.getFont().getName(), Font.PLAIN, arcana.getFont().getSize()));
 		JCheckBox arcProfBox = new JCheckBox();
 		JCheckBox arcExpBox = new JCheckBox();
-		arcProfBox.setSelected(monster.getSkillProficienct(ARC));
+		arcProfBox.setSelected(monster.getSkillProficient(ARC));
 		arcExpBox.setSelected(monster.getSkillExpertise(ARC));
 
 		JPanel hisPanel = new JPanel();
@@ -846,7 +852,7 @@ public class MonsterBuilder extends JSplitPane {
 		history.setFont(new Font(history.getFont().getName(), Font.PLAIN, history.getFont().getSize()));
 		JCheckBox hisProfBox = new JCheckBox();
 		JCheckBox hisExpBox = new JCheckBox();
-		hisProfBox.setSelected(monster.getSkillProficienct(HIS));
+		hisProfBox.setSelected(monster.getSkillProficient(HIS));
 		hisExpBox.setSelected(monster.getSkillExpertise(HIS));
 
 		JPanel invPanel = new JPanel();
@@ -855,7 +861,7 @@ public class MonsterBuilder extends JSplitPane {
 		investigation.setFont(new Font(investigation.getFont().getName(), Font.PLAIN, investigation.getFont().getSize()));
 		JCheckBox invProfBox = new JCheckBox();
 		JCheckBox invExpBox = new JCheckBox();
-		invProfBox.setSelected(monster.getSkillProficienct(INV));
+		invProfBox.setSelected(monster.getSkillProficient(INV));
 		invExpBox.setSelected(monster.getSkillExpertise(INV));
 
 		JPanel natPanel = new JPanel();
@@ -864,7 +870,7 @@ public class MonsterBuilder extends JSplitPane {
 		nature.setFont(new Font(nature.getFont().getName(), Font.PLAIN, nature.getFont().getSize()));
 		JCheckBox natProfBox = new JCheckBox();
 		JCheckBox natExpBox = new JCheckBox();
-		natProfBox.setSelected(monster.getSkillProficienct(NAT));
+		natProfBox.setSelected(monster.getSkillProficient(NAT));
 		natExpBox.setSelected(monster.getSkillExpertise(NAT));
 
 		JPanel relPanel = new JPanel();
@@ -873,7 +879,7 @@ public class MonsterBuilder extends JSplitPane {
 		religion.setFont(new Font(religion.getFont().getName(), Font.PLAIN, religion.getFont().getSize()));
 		JCheckBox relProfBox = new JCheckBox();
 		JCheckBox relExpBox = new JCheckBox();
-		relProfBox.setSelected(monster.getSkillProficienct(REL));
+		relProfBox.setSelected(monster.getSkillProficient(REL));
 		relExpBox.setSelected(monster.getSkillExpertise(REL));
 
 		score.addActionListener(new ActionListener() {
@@ -995,7 +1001,7 @@ public class MonsterBuilder extends JSplitPane {
 		animal.setFont(new Font(animal.getFont().getName(), Font.PLAIN, animal.getFont().getSize()));
 		JCheckBox aniProfBox = new JCheckBox();
 		JCheckBox aniExpBox = new JCheckBox();
-		aniProfBox.setSelected(monster.getSkillProficienct(ANI));
+		aniProfBox.setSelected(monster.getSkillProficient(ANI));
 		aniExpBox.setSelected(monster.getSkillExpertise(ANI));
 
 		JPanel insPanel = new JPanel();
@@ -1004,7 +1010,7 @@ public class MonsterBuilder extends JSplitPane {
 		insight.setFont(new Font(insight.getFont().getName(), Font.PLAIN, insight.getFont().getSize()));
 		JCheckBox insProfBox = new JCheckBox();
 		JCheckBox insExpBox = new JCheckBox();
-		insProfBox.setSelected(monster.getSkillProficienct(INS));
+		insProfBox.setSelected(monster.getSkillProficient(INS));
 		insExpBox.setSelected(monster.getSkillExpertise(INS));
 
 		JPanel medPanel = new JPanel();
@@ -1013,7 +1019,7 @@ public class MonsterBuilder extends JSplitPane {
 		medicine.setFont(new Font(medicine.getFont().getName(), Font.PLAIN, medicine.getFont().getSize()));
 		JCheckBox medProfBox = new JCheckBox();
 		JCheckBox medExpBox = new JCheckBox();
-		medProfBox.setSelected(monster.getSkillProficienct(MED));
+		medProfBox.setSelected(monster.getSkillProficient(MED));
 		medExpBox.setSelected(monster.getSkillExpertise(MED));
 
 		JPanel perPanel = new JPanel();
@@ -1022,7 +1028,7 @@ public class MonsterBuilder extends JSplitPane {
 		perception.setFont(new Font(perception.getFont().getName(), Font.PLAIN, perception.getFont().getSize()));
 		JCheckBox perProfBox = new JCheckBox();
 		JCheckBox perExpBox = new JCheckBox();
-		perProfBox.setSelected(monster.getSkillProficienct(PER));
+		perProfBox.setSelected(monster.getSkillProficient(PER));
 		perExpBox.setSelected(monster.getSkillExpertise(PER));
 
 		JPanel surPanel = new JPanel();
@@ -1031,7 +1037,7 @@ public class MonsterBuilder extends JSplitPane {
 		survival.setFont(new Font(survival.getFont().getName(), Font.PLAIN, survival.getFont().getSize()));
 		JCheckBox surProfBox = new JCheckBox();
 		JCheckBox surExpBox = new JCheckBox();
-		surProfBox.setSelected(monster.getSkillProficienct(SUR));
+		surProfBox.setSelected(monster.getSkillProficient(SUR));
 		surExpBox.setSelected(monster.getSkillExpertise(SUR));
 
 		score.addActionListener(new ActionListener() {
@@ -1153,7 +1159,7 @@ public class MonsterBuilder extends JSplitPane {
 		deception.setFont(new Font(deception.getFont().getName(), Font.PLAIN, deception.getFont().getSize()));
 		JCheckBox decProfBox = new JCheckBox();
 		JCheckBox decExpBox = new JCheckBox();
-		decProfBox.setSelected(monster.getSkillProficienct(DEC));
+		decProfBox.setSelected(monster.getSkillProficient(DEC));
 		decExpBox.setSelected(monster.getSkillExpertise(DEC));
 
 		JPanel intPanel = new JPanel();
@@ -1162,7 +1168,7 @@ public class MonsterBuilder extends JSplitPane {
 		intimidation.setFont(new Font(intimidation.getFont().getName(), Font.PLAIN, intimidation.getFont().getSize()));
 		JCheckBox intProfBox = new JCheckBox();
 		JCheckBox intExpBox = new JCheckBox();
-		intProfBox.setSelected(monster.getSkillProficienct(INTIM));
+		intProfBox.setSelected(monster.getSkillProficient(INTIM));
 		intExpBox.setSelected(monster.getSkillExpertise(INTIM));
 
 		JPanel perfPanel = new JPanel();
@@ -1171,7 +1177,7 @@ public class MonsterBuilder extends JSplitPane {
 		performance.setFont(new Font(performance.getFont().getName(), Font.PLAIN, performance.getFont().getSize()));
 		JCheckBox perfProfBox = new JCheckBox();
 		JCheckBox perfExpBox = new JCheckBox();
-		perfProfBox.setSelected(monster.getSkillProficienct(PERF));
+		perfProfBox.setSelected(monster.getSkillProficient(PERF));
 		perfExpBox.setSelected(monster.getSkillExpertise(PERF));
 
 		JPanel persPanel = new JPanel();
@@ -1180,7 +1186,7 @@ public class MonsterBuilder extends JSplitPane {
 		persuasion.setFont(new Font(persuasion.getFont().getName(), Font.PLAIN, persuasion.getFont().getSize()));
 		JCheckBox persProfBox = new JCheckBox();
 		JCheckBox persExpBox = new JCheckBox();
-		persProfBox.setSelected(monster.getSkillProficienct(PERS));
+		persProfBox.setSelected(monster.getSkillProficient(PERS));
 		persExpBox.setSelected(monster.getSkillExpertise(PERS));
 
 		score.addActionListener(new ActionListener() {
@@ -1341,7 +1347,6 @@ public class MonsterBuilder extends JSplitPane {
 		return languagePanel;
 	}
 
-	//TODO: update challenge to use a JComboBox
 	private JPanel getChallengePanel() {
 		JPanel challengePanel = new JPanel();
 		challengePanel.setLayout(new BoxLayout(challengePanel, BoxLayout.X_AXIS));
@@ -1390,6 +1395,8 @@ public class MonsterBuilder extends JSplitPane {
 				updateSkillText(persuasion, CHA, PERS);
 			}
 		});
+
+		cr.setSelectedItem(monster.getChallenge());
 		
 		challengePanel.add(challengeLabel);
 		challengePanel.add(Box.createRigidArea(HORIZONTAL_GAP));
@@ -1407,7 +1414,9 @@ public class MonsterBuilder extends JSplitPane {
 		
 		return abilityLabel;
 	}
-	
+
+	//TODO: change name from JLabel to JTextField, eliminate rename button. Find out how to dynamically resize a JTextField as the user types
+	//TODO: apply above to action and legendary action
 	private JPanel getAbilityPanel(int i, JScrollPane scroll) {
 		final int index = i;
 		
@@ -1602,7 +1611,8 @@ public class MonsterBuilder extends JSplitPane {
 		
 		return legendaryLabel;
 	}
-	
+
+	//TODO: only include this panel if the monster has legendary actions
 	private JPanel getCountPanel() {
 		JPanel countPanel = new JPanel();
 		countPanel.setLayout(new BoxLayout(countPanel, BoxLayout.X_AXIS));
@@ -1736,7 +1746,7 @@ public class MonsterBuilder extends JSplitPane {
 			return;
 			
 		//update current monster on server before getting new monster info
-		if (list.isSelectionEmpty()) {
+		if (!monster.getName().equals("select a monster")) {
 			proxy.updateMonster(monster);
 		}
 		
