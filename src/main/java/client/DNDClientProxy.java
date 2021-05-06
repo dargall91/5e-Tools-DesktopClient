@@ -301,7 +301,6 @@ public class DNDClientProxy implements DNDLibrary {
 	
 	public ArrayList<String> getMonsterList() {
 		String result = callMethod("monster", "list", new Object[0]);
-		System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
@@ -322,7 +321,6 @@ public class DNDClientProxy implements DNDLibrary {
 	
 	public ArrayList<String> getEncounterList() {
 		String result = callMethod("encounter", "list", new Object[0]);
-		System.out.println("Received " + result + " from server.");
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResult = null;
 		
