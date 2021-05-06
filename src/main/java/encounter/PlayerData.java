@@ -1,18 +1,17 @@
-package player;
+package encounter;
 
-import java.io.Serializable;
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
 
-public class PlayerData implements Serializable {
+public class PlayerData {
 	private int players;
 	private int level;
 	
 	public PlayerData(JSONObject json) {
 		try {
-			players = json.getInt("players");
-			level = json.getInt("level");
+			players = (int) (long) json.get("players");
+			level = (int) (long) json.get("level");
 		} catch (Exception e) {
-			System.out.println("Error in player.PlayerData(json): " + e.getMessage());
+			System.out.println("Error in PlayerData(json): " + e.getMessage());
 		}
 	}
 	
@@ -53,7 +52,7 @@ public class PlayerData implements Serializable {
 			obj.put("players", players);
 			obj.put("level", level);
 		} catch (Exception e) {
-			System.out.println("Error in player.PlayerData.toJson: " + e.getMessage());
+			System.out.println("Error in encounter.PlayerData.toJson: " + e.getMessage());
 		}
 		
 		return obj;

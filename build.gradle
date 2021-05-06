@@ -3,9 +3,10 @@ plugins {
 	id "checkstyle"
 	id "jacoco"
 	id "application"
+	id "java"
 }
 
-mainClassName = 'Main'
+mainClassName = 'client.DNDClientApp'
 
 jar {
     manifest {
@@ -19,9 +20,13 @@ jar {
     }
 }
 
-//run {
-//    standardInput = System.in
-//}
+/*run {
+    standardInput = System.in
+}*/
+
+run {
+	args("192.168.1.110", "8000");
+}
 
 // In this section you declare where to find the dependencies of your project
 repositories {

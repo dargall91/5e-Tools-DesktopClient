@@ -3,10 +3,11 @@ package client;
 import encounter.*;
 import monster.Monster;
 import encounter.MonsterData;
-import player.PlayerData;
+import encounter.PlayerData;
 import java.util.ArrayList;
 import java.awt.event.*;
 import java.awt.*;
+import java.util.Collections;
 import javax.swing.*;
 import javax.swing.event.*;
 
@@ -18,10 +19,10 @@ public class EncounterBuilder extends JSplitPane {
 	private Encounter encounter;
 	private ArrayList<PlayerData> playerData;
 	private ArrayList<MonsterData> monsterData;
-	private final int HEIGHT = 550;
-	private final int LEFT_WIDTH = 150;
-	private final int RIGHT_WIDTH = 535;
-	private final int INNER_WIDTH = 510;
+	private final int HEIGHT = 1000;
+	private final int LEFT_WIDTH = 300;
+	private final int RIGHT_WIDTH = 700;
+	private final int INNER_WIDTH = 675;
 	private final int INNER_HEIGHT = 20;
 	private final Integer[] levels = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
 		13, 14, 15, 16, 17, 18, 19, 20 };
@@ -71,6 +72,8 @@ public class EncounterBuilder extends JSplitPane {
 		scroll.setPreferredSize(new Dimension(LEFT_WIDTH, HEIGHT));
 		list = new JList();
 		encList = proxy.getEncounterList();
+
+		Collections.sort(encList);
 		
 		list.setModel(new AbstractListModel() {
 			public int getSize() {
@@ -375,16 +378,18 @@ public class EncounterBuilder extends JSplitPane {
 		panel.setMaximumSize(new Dimension(INNER_WIDTH, HEIGHT));
 		
 		JPanel labels = new JPanel();
-		JLabel monsters = new JLabel("monster.Monster:");
+		JLabel monsters = new JLabel("Monster:");
+		monsters.setMinimumSize(new Dimension(200, 20));
+		monsters.setMaximumSize(new Dimension(200, 20));
+		monsters.setPreferredSize(new Dimension(200, 20));
 		JLabel quantity = new JLabel("Quantity:");
 		JLabel initiative = new JLabel("Initiative:");
 		JLabel minions = new JLabel("Minion:");
-		JLabel reinforcements = new JLabel("Reinforcments:");
+		JLabel reinforcements = new JLabel("Reinforcements:");
 		labels.setAlignmentX(Component.LEFT_ALIGNMENT);
 		
 		labels.setLayout(new BoxLayout(labels, BoxLayout.X_AXIS));
 		labels.add(monsters);
-		labels.add(Box.createRigidArea(new Dimension(60, 0)));
 		labels.add(quantity);
 		labels.add(Box.createRigidArea(new Dimension(65, 0)));
 		labels.add(initiative);
@@ -405,9 +410,9 @@ public class EncounterBuilder extends JSplitPane {
 			monsterPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 			
 			JPanel namePanel = new JPanel();
-			namePanel.setMinimumSize(new Dimension(120, 20));
-			namePanel.setMaximumSize(new Dimension(120, 20));
-			namePanel.setPreferredSize(new Dimension(120, 20));
+			namePanel.setMinimumSize(new Dimension(200, 20));
+			namePanel.setMaximumSize(new Dimension(200, 20));
+			namePanel.setPreferredSize(new Dimension(200, 20));
 			namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.X_AXIS));
 			namePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 			JLabel name = new JLabel(monsterData.get(i).getMonster());
@@ -543,7 +548,6 @@ public class EncounterBuilder extends JSplitPane {
 			});
 			
 			monsterPanel.add(namePanel);
-			monsterPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 			monsterPanel.add(number);
 			monsterPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 			monsterPanel.add(add);
@@ -559,7 +563,7 @@ public class EncounterBuilder extends JSplitPane {
 			panel.add(Box.createRigidArea(new Dimension(0, 5)));
 		}
 		
-		JButton addMonster = new JButton("Add monster.Monster");
+		JButton addMonster = new JButton("Add Monster");
 		addMonster.setAlignmentX(Component.LEFT_ALIGNMENT);
 		addMonster.addActionListener(new ActionListener() {
 			@Override

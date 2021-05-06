@@ -5,7 +5,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
-public class DNDBuilder extends JFrame {
+public class DNDClientApp extends JFrame {
 	private JTabbedPane tabPane;
 	private JMenuBar menuBar;
 	private JMenu fileMenu, builderMenu;
@@ -15,7 +15,7 @@ public class DNDBuilder extends JFrame {
 	private EncounterBuilder encBuilder;
 	private DNDClientProxy proxy;
 	
-	DNDBuilder(DNDClientProxy proxy) {
+	DNDClientApp(DNDClientProxy proxy) {
 		this.proxy = proxy;
 		setTitle("D&D Builder Tool");
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -300,7 +300,6 @@ public class DNDBuilder extends JFrame {
 							encBuilder.setSelection();
 							encBuilder.refresh();
 							encBuilder.setSelection();
-
 						}
 					}
 				}
@@ -313,7 +312,7 @@ public class DNDBuilder extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				DNDBuilder dndBuilder =	new DNDBuilder(proxy);
+				DNDClientApp dndClientApp =	new DNDClientApp(proxy);
 			}
 		});
 	}

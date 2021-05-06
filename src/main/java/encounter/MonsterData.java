@@ -85,7 +85,7 @@ public class MonsterData {
 		JSONObject obj = new JSONObject();
 		
 		try {
-			obj.put("src/java/monster", monster);
+			obj.put("monster", monster);
 			obj.put("quantity", quantity);
 			obj.put("xp", xp);
 			obj.put("minion", minion);

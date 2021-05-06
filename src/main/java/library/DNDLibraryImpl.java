@@ -1,15 +1,14 @@
 package library;
 
-import library.DNDLibrary;
 import monster.*;
 import encounter.*;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import player.*;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
-//import java.net.URL;
-import org.json.JSONObject;
-import org.json.JSONArray;
-import org.json.JSONTokener;
 
 public class DNDLibraryImpl implements DNDLibrary {
 	private Hashtable<String, Monster> monLib;
@@ -34,7 +33,6 @@ public class DNDLibraryImpl implements DNDLibrary {
 			name = fileNames[i].substring(0, Math.min(fileNames[i].length(), fileNames[i].length() - 5));
 			monLib.put(name, new Monster(name));
 		}
-		
 	}
 	
 	private void initEncLib() {
@@ -49,31 +47,30 @@ public class DNDLibraryImpl implements DNDLibrary {
 	}
 	
 	private void initPlrLib() {
-		/*File file = new File("PCs/");
-		String[] fileNames = file.list();
-		String name;
-		
-		for (int i = 0; i < fileNames.length; i++) {
-			name = fileNames[i].substring(0, Math.min(fileNames[i].length(), fileNames[i].length() - 5));
-			plrLib.put(name, new player.PlayerCharacter(name));
-		}*/
-		
-		try {
-			InputStream in = this.getClass().getClassLoader().getResourceAsStream("PCs/PlayerCharacters.json");
+		FileReader reader = null;
 
-			if (in == null)
-            		in = new FileInputStream(new File("PCs/PlayerCharacters.json"));
-            		
-			JSONArray arr = new JSONArray(new JSONTokener(in));
-			int length = arr.length();
+		try {
+			reader = new FileReader("PCs/PlayerCharacters.json", Charset.forName("UTF-8"));
+
+			JSONParser parser = new JSONParser();
+			JSONArray arr = (JSONArray) parser.parse(reader);
+			int length = arr.size();
 			
 			for (int i = 0; i < length; i++) {
-				JSONObject obj = arr.getJSONObject(i);
-				plrLib.put(obj.getString("name"), new PlayerCharacter(obj));
+				JSONObject obj = (JSONObject) arr.get(i);
+				plrLib.put((String) obj.get("name"), new PlayerCharacter(obj));
 			}
 				
 		} catch (Exception e) {
 			System.out.println("Error in library.DNDLibrary.initPlrLib: " + e.getMessage());
+		} finally {
+			try {
+				if (reader != null) {
+					reader.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -342,7 +339,7 @@ public class DNDLibraryImpl implements DNDLibrary {
 		String result = "[]";
 		
 		try {
-			result = playerCharactersToJson().toString(4);
+			result = playerCharactersToJson().toString();
 		} catch (Exception e) {
 			System.out.println("Error in library.DNDLibrary.playerCharactersToJsonString: " + e.getMessage());
 		}
@@ -358,7 +355,7 @@ public class DNDLibraryImpl implements DNDLibrary {
 			Iterator<String> itr = keys.iterator();
 			
 			while (itr.hasNext()) {
-				arr.put(plrLib.get(itr.next()).toJson());
+				arr.add(plrLib.get(itr.next()).toJson());
 			}
 		} catch (Exception e) {
 			System.out.println("Exception in library.DNDLibrary.playerCharactersToJson: " + e.getMessage());
@@ -367,7 +364,7 @@ public class DNDLibraryImpl implements DNDLibrary {
 		return arr;
 	}
 	
-	//TODO: potentially private method, if change to private do not forget to remove from DNDlibrary.java and client.DNDClientProxy.java
+	//TODO: potentially private method, if change to private do not forget to remove from DNDLibrary.java and DNDClientProxy.java
 	public boolean savePlayerCharacters() {
 		boolean result = false;
 		

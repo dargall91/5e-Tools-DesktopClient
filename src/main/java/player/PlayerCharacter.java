@@ -1,13 +1,16 @@
 package player;
 
-import java.io.*;
-import java.util.*;
-import org.json.JSONObject;
-import org.json.JSONTokener;
+import org.json.simple.JSONObject;
 
-public class PlayerCharacter implements Serializable {
+public class PlayerCharacter {
 	private String name;
 	private int bonus, ac;
+
+	public PlayerCharacter() {
+		name = "Name";
+		bonus = 0;
+		ac = 0;
+	}
 	
 	public PlayerCharacter(String name) {
 		this.name = name;
@@ -21,9 +24,9 @@ public class PlayerCharacter implements Serializable {
 	
 	private void initFromJson(JSONObject json) {
 		try {
-			name = json.getString("name");
-			ac = json.getInt("ac");
-			bonus = json.getInt("bonus");
+			name = (String) json.get("name");
+			ac = (int) (long) json.get("ac");
+			bonus = (int) (long) json.get("bonus");
 		} catch (Exception e) {
 			System.out.println("Error in player.PlayerCharacter(JSONObject): " + e.getMessage());
 		}

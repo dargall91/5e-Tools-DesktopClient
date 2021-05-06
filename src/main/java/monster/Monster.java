@@ -8,9 +8,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-//TODO: remove proficiency var, is now calculated based on CR. Update desktop GUIs to reflect this change
-//TODO: update GUIs with display name
-//TODO: update GUIs, leg action coutn now an int
 public class Monster {
 	private final String[] STATS = { "STR", "DEX", "CON", "INT", "WIS", "CHA" };
 	private String name, displayName, type, alignment, size, speed, languages, senses, ac, hp,
@@ -35,15 +32,10 @@ public class Monster {
 		FileReader reader = null;
 		
 		try {
-			//InputStream in = this.getClass().getClassLoader().getResourceAsStream("EmptyData/NewMonster.json");
 			reader = new FileReader("EmptyData/NewMonster.json", Charset.forName("UTF-8"));
-
-			//if (in == null)
-            //		in = new FileInputStream(new File("EmptyData/NewMonster.json"));
 
 			JSONParser parser = new JSONParser();
 
-			//JSONObject json = new JSONObject(new JSONTokener(in));
 			JSONObject json = (JSONObject) parser.parse(reader);
 			initFromJson(json);
 		} catch (Exception e) {
@@ -66,16 +58,10 @@ public class Monster {
 		FileReader reader = null;
 
 		try {
-			//InputStream in = this.getClass().getClassLoader().getResourceAsStream("Monsters/" + name + ".json");
-
 			reader = new FileReader("Monsters/" + name + ".json", Charset.forName("UTF-8"));
-
-			//if (in == null)
-			//		in = new FileInputStream(new File("EmptyData/NewMonster.json"));
 
 			JSONParser parser = new JSONParser();
 
-			//JSONObject json = new JSONObject(new JSONTokener(in));
 			JSONObject json = (JSONObject) parser.parse(reader);
 			initFromJson(json);
 		} catch (Exception e) {
@@ -108,6 +94,11 @@ public class Monster {
 		try {
 			name = (String) json.get("name");
 			displayName = (String) json.get("displayName");
+
+			if (displayName.equals("")) {
+				displayName = name;
+			}
+
 			type = (String) json.get("type");
 			alignment = (String) json.get("alignment");
 			size = (String) json.get("size");
@@ -193,7 +184,7 @@ public class Monster {
 		return languages;
 	}
 	
-	public boolean getSkillProficienct(String skill) {
+	public boolean getSkillProficient(String skill) {
 		return skills.get(skill).getProficient();
 	}
 	
@@ -359,7 +350,7 @@ public class Monster {
 	}
 
 	public int getAbilityModifier(String stat) {
-		return (scores.get(stat).getScore() - 10) / 2;
+		return Math.floorDiv(scores.get(stat).getScore() - 10, 2);
 	}
 
 	public String getSignedAbilityModifier(String stat) {
@@ -369,6 +360,33 @@ public class Monster {
 			return Integer.toString(mod);
 
 		return "+" + Integer.toString(mod);
+	}
+
+	public String getSignedSkillModifier(String stat, String skill) {
+		int mod = getAbilityModifier(stat);
+
+		if (getSkillProficient(skill))
+			mod += getProficiency();
+
+		if (getSkillExpertise(skill))
+			mod += getProficiency();
+
+		if (mod < 0)
+			return Integer.toString(mod);
+
+		return "+" + mod;
+	}
+
+	public String getSignedSavingThrow(String stat) {
+		int mod = getAbilityModifier(stat);
+
+		if (getAbilityProficiency(stat))
+			mod += getProficiency();
+
+		if (mod < 0)
+			return Integer.toString(mod);
+
+		return "+" + mod;
 	}
 	
 	public boolean getAbilityProficiency(String stat) {
@@ -393,6 +411,10 @@ public class Monster {
 	
 	//Setters
 	public void setName(String name) {
+		if (this.name.equals(displayName)) {
+			displayName = name;
+		}
+
 		this.name = name;
 	}
 
@@ -422,14 +444,14 @@ public class Monster {
 	
 	public void setSkillProficiency(String skill, boolean proficient) {
 		if (!proficient)
-			skills.get(skill).setExpertise(proficient);
+			skills.get(skill).setExpertise(false);
 		
 		skills.get(skill).setProficient(proficient);
 	}
 	
 	public void setSkillExpertise(String skill, boolean expertise) {
 		if (expertise)
-			skills.get(skill).setProficient(expertise);
+			skills.get(skill).setProficient(true);
 			
 		skills.get(skill).setExpertise(expertise);			
 	}

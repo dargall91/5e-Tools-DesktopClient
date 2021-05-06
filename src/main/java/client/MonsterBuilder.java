@@ -1,12 +1,12 @@
 package client;
 
-import client.*;
 import monster.*;
 import monster.Action;
 //import java.lang.Math;
 import java.util.ArrayList;
 import java.awt.event.*;
 import java.awt.*;
+import java.util.Collections;
 import javax.swing.*;
 import javax.swing.event.*;
 
@@ -18,14 +18,47 @@ public class MonsterBuilder extends JSplitPane {
 	private ArrayList<Ability> abilityList;
 	private ArrayList<Action> actionList;
 	private ArrayList<LegendaryAction> legendaryList;
-	private final int HEIGHT = 550;
-	private final int LEFT_WIDTH = 150;
+	private final int HEIGHT = 1000;
+	private final int LEFT_WIDTH = 300;
 	private final int RIGHT_WIDTH = 1075;
 	private final int INNER_WIDTH = 1050;
 	private final int INNER_HEIGHT = 20;
 	private final Dimension scorePanelSize = new Dimension(175, 220);
 	private final Dimension VERTICAL_GAP = new Dimension(0, 5);
 	private final Dimension HORIZONTAL_GAP = new Dimension(5, 0);
+	private final Integer[] scores = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+			13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
+	private final String[] crs = { "-1", "0", "1/8", "1/4", "1/2", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
+			"13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30" };
+	private final String STR = "STR";
+	private final String ATH = "Athletics";
+	private final String DEX = "DEX";
+	private final String ACRO = "Acrobatics";
+	private final String HAND = "Sleight of Hand";
+	private final String STE = "Stealth";
+	private final String CON = "CON";
+	private final String INT = "INT";
+	private final String ARC = "Arcana";
+	private final String HIS = "History";
+	private final String INV = "Investigation";
+	private final String NAT = "Nature";
+	private final String REL = "Religion";
+	private final String WIS = "WIS";
+	private final String ANI = "Animal Handling";
+	private final String INS = "Insight";
+	private final String MED = "Medicine";
+	private final String PER = "Perception";
+	private final String SUR = "Survival";
+	private final String CHA = "CHA";
+	private final String DEC = "Deception";
+	private final String INTIM = "Intimidation";
+	private final String PERF = "Performance";
+	private final String PERS = "Persuasion";
+	private JLabel strSave, athletics, dexSave, acrobatics, hand, stealth, conSave, intSave, arcana, history,
+			investigation, nature, religion, wisSave, animal, insight, medicine, perception, survival, chaSave,
+			deception, intimidation, performance, persuasion;
+	private JCheckBox strSaveBox, dexSaveBox, conSaveBox, intSaveBox, wisSaveBox, chaSaveBox;
+
 
 	/**
 	 * Builds the MonsterBuilder tab
@@ -37,7 +70,7 @@ public class MonsterBuilder extends JSplitPane {
 	}
 	
 	/**
-	 * Initializes the inital layout of the MonsterBuilder tab
+	 * Initializes the initial layout of the MonsterBuilder tab
 	 */
 	private void initialize() {
 		setOrientation(JSplitPane.HORIZONTAL_SPLIT);
@@ -82,6 +115,8 @@ public class MonsterBuilder extends JSplitPane {
 		scroll.setPreferredSize(new Dimension(LEFT_WIDTH, HEIGHT));
 		list = new JList();
 		monList = proxy.getMonsterList();
+
+		Collections.sort(monList);
 		
 		list.setModel(new AbstractListModel() {
 			public int getSize() {
@@ -92,13 +127,17 @@ public class MonsterBuilder extends JSplitPane {
 				return monList.get(i);
 			}
 		});
-		
+
 		list.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent event) {
 				listValueChanged(event);
 			}
 		});
-		
+
+		if (monList.size() > 0) {
+			list.setSelectedIndex(0);
+		}
+
 		scroll.setViewportView(list);
 		
 		return scroll;
@@ -123,12 +162,13 @@ public class MonsterBuilder extends JSplitPane {
 		//name
 		panel.add(getNameLabel());
 		panel.add(Box.createRigidArea(VERTICAL_GAP));
+
+		//TODO: add display name panel
 		
 		if (monster.getName().equals("select a monster")) {
 			scroll.setViewportView(panel);
 			return scroll;
 		}
-			
 		
 		//size
 		panel.add(getSizePanel());
@@ -181,12 +221,13 @@ public class MonsterBuilder extends JSplitPane {
 			panel.add(Box.createRigidArea(VERTICAL_GAP));
 		}
 		
-		JButton addAbility = new JButton("Add monster.Ability");
+		JButton addAbility = new JButton("Add Ability");
 		addAbility.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				monster.addAbility(new Ability());
-				refreshRight();
+				revalidate();
+				repaint();
 			}
 		});
 		
@@ -204,7 +245,7 @@ public class MonsterBuilder extends JSplitPane {
 			panel.add(Box.createRigidArea(VERTICAL_GAP));
 		}
 		
-		JButton addAction = new JButton("Add monster.Action");
+		JButton addAction = new JButton("Add Action");
 		addAction.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -229,7 +270,7 @@ public class MonsterBuilder extends JSplitPane {
 			panel.add(Box.createRigidArea(VERTICAL_GAP));
 		}
 		
-		JButton addLegendary = new JButton("Add Legendary monster.Action");
+		JButton addLegendary = new JButton("Add Legendary Action");
 		addLegendary.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -480,13 +521,6 @@ public class MonsterBuilder extends JSplitPane {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-		JPanel profPanel = new JPanel();
-		profPanel.setLayout(new BoxLayout(profPanel, BoxLayout.X_AXIS));
-		profPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-		profPanel.setMaximumSize(new Dimension(INNER_WIDTH, INNER_HEIGHT));
-		JLabel profLabel = new JLabel("Proficiency Bonus");
-		profLabel.setFont(new Font(profLabel.getFont().getName(), Font.BOLD, profLabel.getFont().getSize()));
-		JTextField proficiency = new JTextField(Integer.toString(monster.getProficiency()));
 		
 		JPanel scorePanel = new JPanel();
 		scorePanel.setMinimumSize(new Dimension(INNER_WIDTH, 210));
@@ -494,45 +528,12 @@ public class MonsterBuilder extends JSplitPane {
 		scorePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		scorePanel.setLayout(new BoxLayout(scorePanel, BoxLayout.X_AXIS));
 		
-		proficiency.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyChar() >= '0' && e.getKeyChar() <= '9' || (e.getKeyCode() == KeyEvent.VK_BACK_SPACE 
-					|| e.getKeyCode() == KeyEvent.VK_DELETE))
-					proficiency.setEditable(true);
-					
-				else
-					proficiency.setEditable(false);
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent e) {
-				if (proficiency.getText().equals(""))
-					proficiency.setText("0");
-					
-				if (proficiency.getText().length() > 1 && proficiency.getText().charAt(0) == '0')
-					proficiency.setText(proficiency.getText().substring(1));
-					
-				//monster.setProficiency(Integer.parseInt(proficiency.getText()));
-			}
-		});
-		
-		//TODO: add Proficiency panel here? pass to all ability score panels so that
-		//changes are reflected in each one
-		//or pass proficiency to this panel, then pass again to each score
-		
-		profPanel.add(profLabel);
-		profPanel.add(Box.createRigidArea(HORIZONTAL_GAP));
-		profPanel.add(proficiency);
-		panel.add(profPanel);
-		panel.add(Box.createRigidArea(VERTICAL_GAP));
-		
-		scorePanel.add(getStr(proficiency));
-		scorePanel.add(getDex(proficiency));
-		scorePanel.add(getCon(proficiency));
-		scorePanel.add(getInt(proficiency));
-		scorePanel.add(getWis(proficiency));
-		scorePanel.add(getCha(proficiency));
+		scorePanel.add(getStr());
+		scorePanel.add(getDex());
+		scorePanel.add(getCon());
+		scorePanel.add(getInt());
+		scorePanel.add(getWis());
+		scorePanel.add(getCha());
 		panel.add(scorePanel);
 		
 		return panel;
@@ -544,11 +545,7 @@ public class MonsterBuilder extends JSplitPane {
 	 * then adding listener here to that changing proficiency will automatically update
 	 * skills and saves
 	 */
-	private JPanel getStr(JTextField proficiency) {
-		final String STR = "STR";
-		int strScore = monster.getAbilityScore(STR);
-		int strMod = Math.floorDiv(strScore - 10, 2);
-		
+	private JPanel getStr() {
 		JPanel strPanel = new JPanel();
 		strPanel.setMinimumSize(scorePanelSize);
 		strPanel.setPreferredSize(scorePanelSize);
@@ -560,140 +557,50 @@ public class MonsterBuilder extends JSplitPane {
 		JLabel str = new JLabel(STR);
 		str.setAlignmentX(Component.CENTER_ALIGNMENT);
 		str.setFont(new Font(str.getFont().getName(), Font.BOLD, 15));
-		JTextField score = new JTextField(Integer.toString(strScore));
-		score.setMinimumSize(new Dimension(30, 20));
-		score.setPreferredSize(new Dimension(30, 20));
-		score.setMaximumSize(new Dimension(30, 20));
-		score.setHorizontalAlignment(JTextField.CENTER);
+		JComboBox score = new JComboBox(scores);
+		score.setMaximumSize(new Dimension(45, 20));
+		score.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
-		JLabel mod = new JLabel("(" + signBonus(strMod) + ")");
+		JLabel mod = new JLabel();
 		mod.setAlignmentX(Component.CENTER_ALIGNMENT);
 		mod.setFont(new Font(mod.getFont().getName(), Font.PLAIN, mod.getFont().getSize()));
 		
 		JPanel savePanel = new JPanel();
 		savePanel.setLayout(new BoxLayout(savePanel, BoxLayout.X_AXIS));
-		JCheckBox saveBox = new JCheckBox();
-		saveBox.setSelected(monster.getAbilityProficiency(STR));
-		JLabel save = new JLabel("Saving Throws: " + signBonus(calcBonus(strMod, monster.getProficiency(),
-					monster.getAbilityProficiency(STR), false)));
-		save.setFont(new Font(save.getFont().getName(), Font.PLAIN, save.getFont().getSize()));
-	
-		final String ATH = "athletics";
+		strSaveBox = new JCheckBox();
+		strSaveBox.setSelected(monster.getAbilityProficiency(STR));
+		strSave = new JLabel();
+		strSave.setFont(new Font(strSave.getFont().getName(), Font.PLAIN, strSave.getFont().getSize()));
+
 		JPanel athPanel = new JPanel();
 		athPanel.setLayout(new BoxLayout(athPanel, BoxLayout.X_AXIS));
-		JLabel athletics = new JLabel("Athletics: " + signBonus(calcBonus(strMod, monster.getProficiency(),
-					monster.getSkillProficienct(ATH), monster.getSkillExpertise(ATH))));
+		athletics = new JLabel();
 		athletics.setFont(new Font(athletics.getFont().getName(), Font.PLAIN, athletics.getFont().getSize()));
 		JCheckBox athProfBox = new JCheckBox();
 		JCheckBox athExpBox = new JCheckBox();
-		athProfBox.setSelected(monster.getSkillProficienct(ATH));
+		athProfBox.setSelected(monster.getSkillProficient(ATH));
 		athExpBox.setSelected(monster.getSkillExpertise(ATH));
-		
-		//listeners for Score text field
-		score.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyChar() >= '0' && e.getKeyChar() <= '9' || (e.getKeyCode() == KeyEvent.VK_BACK_SPACE 
-					|| e.getKeyCode() == KeyEvent.VK_DELETE))
-					score.setEditable(true);
-					
-				else
-					score.setEditable(false);
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent e) {
-				if (score.getText().equals(""))
-					score.setText("0");
-					
-				if (score.getText().length() > 1 && score.getText().charAt(0) == '0')
-					score.setText(score.getText().substring(1));
-					
-				int num = Integer.parseInt(score.getText());
-				monster.setAbilityScore(STR, num);
-				int scoreMod = Math.floorDiv(num - 10, 2);
-				mod.setText("(" + signBonus(scoreMod) + ")");
-				save.setText("Saving Throws: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getAbilityProficiency(STR), false)));
-				athletics.setText("Athletics: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(ATH), monster.getSkillExpertise(ATH))));
-			}
-		});
-		
-		//saving throw checkbox listener
-		saveBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setAbilityProficiency(STR, true);
-					
-				else
-					monster.setAbilityProficiency(STR, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				save.setText("Saving Throws: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getAbilityProficiency(STR), false)));
-			}
-		});
-		
-		//athletics checkbox listeners
-		athProfBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setSkillProficiency(ATH, true);
-					
-				else {
-					monster.setSkillProficiency(ATH, false);
-					athExpBox.setSelected(false);
-				}
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				athletics.setText("Athletics: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(ATH), monster.getSkillExpertise(ATH))));
-			}
-		});
-		
-		athExpBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1) {
-					monster.setSkillExpertise(ATH, true);
-					athProfBox.setSelected(true);
-				}
-					
-				else
-					monster.setSkillExpertise(ATH, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				athletics.setText("Athletics: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(ATH), monster.getSkillExpertise(ATH))));
-			}
-		});
-		
-		DeferredDocumentListener listener = new DeferredDocumentListener (new ActionListener() {
+
+		score.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int num = Integer.parseInt(score.getText());
-				monster.setAbilityScore(STR, num);
-				int scoreMod = Math.floorDiv(num - 10, 2);
-				mod.setText("(" + signBonus(scoreMod) + ")");
-				save.setText("Saving Throws: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getAbilityProficiency(STR), false)));
-				athletics.setText("Athletics: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(ATH), monster.getSkillExpertise(ATH))));
+				monster.setAbilityScore(STR, (Integer) score.getSelectedItem());
+				updateAbilityModifier(mod, STR);
+				updateSavingThrow(strSave, strSaveBox, STR);
+				updateSkillText(athletics, STR, ATH);
 			}
 		});
-		
-		proficiency.getDocument().addDocumentListener(listener);
-		proficiency.addFocusListener(new FocusListener() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				listener.start();
-			}
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				listener.stop();
+
+		strSaveBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				updateSavingThrow(strSave, strSaveBox, STR);
 			}
 		});
+
+		athProfBox.addItemListener(new ProficiencyListener(athProfBox, athExpBox, athletics, STR, ATH));
+		athExpBox.addItemListener(new ExpertiseListener(athProfBox, athExpBox, athletics, STR, ATH));
+
+		score.setSelectedItem(monster.getAbilityScore(STR));
 		
 		strPanel.add(str);
 		strPanel.add(Box.createRigidArea(VERTICAL_GAP));
@@ -701,8 +608,8 @@ public class MonsterBuilder extends JSplitPane {
 		strPanel.add(Box.createRigidArea(VERTICAL_GAP));
 		strPanel.add(mod);
 		
-		savePanel.add(saveBox);
-		savePanel.add(save);
+		savePanel.add(strSaveBox);
+		savePanel.add(strSave);
 		strPanel.add(savePanel);
 		
 		athPanel.add(athExpBox);
@@ -719,11 +626,7 @@ public class MonsterBuilder extends JSplitPane {
 	 * then adding listener here to that changing proficiency will automatically update
 	 * skills and saves
 	 */
-	private JPanel getDex(JTextField proficiency) {
-		final String DEX = "DEX";
-		int dexScore = monster.getAbilityScore(DEX);
-		int dexMod = Math.floorDiv(dexScore - 10, 2);
-		
+	private JPanel getDex() {
 		JPanel dexPanel = new JPanel();
 		dexPanel.setMinimumSize(scorePanelSize);
 		dexPanel.setPreferredSize(scorePanelSize);
@@ -735,245 +638,86 @@ public class MonsterBuilder extends JSplitPane {
 		JLabel dex = new JLabel(DEX);
 		dex.setAlignmentX(Component.CENTER_ALIGNMENT);
 		dex.setFont(new Font(dex.getFont().getName(), Font.BOLD, 15));
-		JTextField score = new JTextField(Integer.toString(dexScore));
-		score.setMinimumSize(new Dimension(30, 20));
-		score.setPreferredSize(new Dimension(30, 20));
-		score.setMaximumSize(new Dimension(30, 20));
-		score.setHorizontalAlignment(JTextField.CENTER);
-		String modifier = signBonus(dexMod);
-		JLabel mod = new JLabel("(" + modifier + ")");
+		JComboBox score = new JComboBox(scores);
+		score.setMaximumSize(new Dimension(45, 20));
+		score.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		JLabel mod = new JLabel();
 		mod.setAlignmentX(Component.CENTER_ALIGNMENT);
 		mod.setFont(new Font(mod.getFont().getName(), Font.PLAIN, mod.getFont().getSize()));
 		
 		JPanel savePanel = new JPanel();
 		savePanel.setLayout(new BoxLayout(savePanel, BoxLayout.X_AXIS));
-		JCheckBox saveBox = new JCheckBox();
-		saveBox.setSelected(monster.getAbilityProficiency(DEX));
-		JLabel save = new JLabel("Saving Throws: " + signBonus(calcBonus(dexMod, monster.getProficiency(),
-			monster.getAbilityProficiency(DEX), false)));
-		save.setFont(new Font(save.getFont().getName(), Font.PLAIN, save.getFont().getSize()));
-		
-		final String ACRO = "acrobatics";
+		dexSaveBox = new JCheckBox();
+		dexSaveBox.setSelected(monster.getAbilityProficiency(DEX));
+		dexSave = new JLabel();
+		dexSave.setFont(new Font(dexSave.getFont().getName(), Font.PLAIN, dexSave.getFont().getSize()));
+
 		JPanel acroPanel = new JPanel();
 		acroPanel.setLayout(new BoxLayout(acroPanel, BoxLayout.X_AXIS));
-		JLabel acrobatics = new JLabel("Acrobatics: " + signBonus(calcBonus(dexMod, monster.getProficiency(),
-					monster.getSkillProficienct(ACRO), monster.getSkillExpertise(ACRO))));
+		acrobatics = new JLabel();
 		acrobatics.setFont(new Font(acrobatics.getFont().getName(), Font.PLAIN, acrobatics.getFont().getSize()));
 		JCheckBox acroProfBox = new JCheckBox();
 		JCheckBox acroExpBox = new JCheckBox();
-		acroProfBox.setSelected(monster.getSkillProficienct(ACRO));
+		acroProfBox.setSelected(monster.getSkillProficient(ACRO));
 		acroExpBox.setSelected(monster.getSkillExpertise(ACRO));
-		
-		final String HAND = "sleight of hand";
+
 		JPanel handPanel = new JPanel();
 		handPanel.setLayout(new BoxLayout(handPanel, BoxLayout.X_AXIS));
-		JLabel hand = new JLabel("Sleight of Hand: " + signBonus(calcBonus(dexMod, monster.getProficiency(),
-					monster.getSkillProficienct(HAND), monster.getSkillExpertise(HAND))));
+		hand = new JLabel();
 		hand.setFont(new Font(hand.getFont().getName(), Font.PLAIN, hand.getFont().getSize()));
 		JCheckBox handProfBox = new JCheckBox();
 		JCheckBox handExpBox = new JCheckBox();
-		handProfBox.setSelected(monster.getSkillProficienct(HAND));
+		handProfBox.setSelected(monster.getSkillProficient(HAND));
 		handExpBox.setSelected(monster.getSkillExpertise(HAND));
-		
-		final String STE = "stealth";
+
 		JPanel stePanel = new JPanel();
 		stePanel.setLayout(new BoxLayout(stePanel, BoxLayout.X_AXIS));
-		JLabel stealth = new JLabel("Stealth: " + signBonus(calcBonus(dexMod, monster.getProficiency(),
-					monster.getSkillProficienct(STE), monster.getSkillExpertise(STE))));
+		stealth = new JLabel();
 		stealth.setFont(new Font(stealth.getFont().getName(), Font.PLAIN, stealth.getFont().getSize()));
 		JCheckBox steProfBox = new JCheckBox();
 		JCheckBox steExpBox = new JCheckBox();
-		steProfBox.setSelected(monster.getSkillProficienct(STE));
+		steProfBox.setSelected(monster.getSkillProficient(STE));
 		steExpBox.setSelected(monster.getSkillExpertise(STE));
-		
-		//listeners for Score text field
-		score.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyChar() >= '0' && e.getKeyChar() <= '9' || (e.getKeyCode() == KeyEvent.VK_BACK_SPACE 
-					|| e.getKeyCode() == KeyEvent.VK_DELETE))
-					score.setEditable(true);
-					
-				else
-					score.setEditable(false);
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent e) {
-				if (score.getText().equals(""))
-					score.setText("0");
-					
-				if (score.getText().length() > 1 && score.getText().charAt(0) == '0')
-					score.setText(score.getText().substring(1));
-					
-				int num = Integer.parseInt(score.getText());
-				monster.setAbilityScore(DEX, num);
-				int scoreMod = Math.floorDiv(num - 10, 2);
-				mod.setText("(" + signBonus(scoreMod) + ")");
-				save.setText("Saving Throws: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getAbilityProficiency(DEX), false)));
-				acrobatics.setText("Acrobatics: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(ACRO), monster.getSkillExpertise(ACRO))));
-				hand.setText("Sleight of Hand: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(HAND), monster.getSkillExpertise(HAND))));
-				stealth.setText("Stealth: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(STE), monster.getSkillExpertise(STE))));
-			}
-		});
-		
-		//saving throw checkbox listener
-		saveBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setAbilityProficiency(DEX, true);
-					
-				else
-					monster.setAbilityProficiency(DEX, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				save.setText("Saving Throws: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getAbilityProficiency(DEX), false)));
-			}
-		});
-		
-		//acrobatics checkbox listeners
-		acroProfBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setSkillProficiency(ACRO, true);
-					
-				else {
-					monster.setSkillProficiency(ACRO, false);
-					acroExpBox.setSelected(false);
-				}
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				acrobatics.setText("Acrobatics: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(ACRO), monster.getSkillExpertise(ACRO))));
-			}
-		});
-		
-		acroExpBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1) {
-					monster.setSkillExpertise(ACRO, true);
-					acroProfBox.setSelected(true);
-				}
-					
-				else
-					monster.setSkillExpertise(ACRO, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				acrobatics.setText("Acrobatics: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(ACRO), monster.getSkillExpertise(ACRO))));
-			}
-		});
-		
-		//sleight of hand checkbox listeners
-		handProfBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setSkillProficiency(HAND, true);
-					
-				else {
-					monster.setSkillProficiency(HAND, false);
-					handExpBox.setSelected(false);
-				}
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				hand.setText("Sleight of Hand: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(HAND), monster.getSkillExpertise(HAND))));
-			}
-		});
-		
-		handExpBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1) {
-					monster.setSkillExpertise(HAND, true);
-					handProfBox.setSelected(true);
-				}
-					
-				else
-					monster.setSkillExpertise(HAND, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				hand.setText("Sleight of Hand: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(HAND), monster.getSkillExpertise(HAND))));
-			}
-		});
-		
-		//stealth checkbox listeners
-		steProfBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setSkillProficiency(STE, true);
-					
-				else {
-					monster.setSkillProficiency(STE, false);
-					steExpBox.setSelected(false);
-				}
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				stealth.setText("Stealth: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(STE), monster.getSkillExpertise(STE))));
-			}
-		});
-		
-		steExpBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1) {
-					monster.setSkillExpertise(STE, true);
-					steProfBox.setSelected(true);
-				}
-					
-				else
-					monster.setSkillExpertise(STE, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				stealth.setText("Stealth: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(STE), monster.getSkillExpertise(STE))));
-			}
-		});
-		
-		DeferredDocumentListener listener = new DeferredDocumentListener (new ActionListener() {
+
+		score.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int num = Integer.parseInt(score.getText());
-				monster.setAbilityScore(DEX, num);
-				int scoreMod = Math.floorDiv(num - 10, 2);
-				mod.setText("(" + signBonus(scoreMod) + ")");
-				save.setText("Saving Throws: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getAbilityProficiency(DEX), false)));
-				acrobatics.setText("Acrobatics: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(ACRO), monster.getSkillExpertise(ACRO))));
-				hand.setText("Sleight of Hand: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(HAND), monster.getSkillExpertise(HAND))));
-				stealth.setText("Stealth: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(STE), monster.getSkillExpertise(STE))));
+				monster.setAbilityScore(DEX, (Integer) score.getSelectedItem());
+				updateAbilityModifier(mod, DEX);
+				updateSavingThrow(dexSave, dexSaveBox, DEX);
+				updateSkillText(acrobatics, DEX, ACRO);
+				updateSkillText(hand, DEX, HAND);
+				updateSkillText(stealth, DEX, STE);
 			}
 		});
-		
-		proficiency.getDocument().addDocumentListener(listener);
-		proficiency.addFocusListener(new FocusListener() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				listener.start();
-			}
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				listener.stop();
+
+		//saving throw checkbox listener
+		dexSaveBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				updateSavingThrow(dexSave, dexSaveBox, DEX);
 			}
 		});
-		
+
+		score.setSelectedItem(monster.getAbilityScore(DEX));
+
+		acroProfBox.addItemListener(new ProficiencyListener(acroProfBox, acroExpBox, acrobatics, DEX, ACRO));
+		acroExpBox.addItemListener(new ExpertiseListener(acroProfBox, acroExpBox, acrobatics, DEX, ACRO));
+
+		handProfBox.addItemListener(new ProficiencyListener(handProfBox, handExpBox, hand, DEX, HAND));
+		handExpBox.addItemListener(new ExpertiseListener(handProfBox, handExpBox, hand, DEX, HAND));
+
+		steProfBox.addItemListener(new ProficiencyListener(steProfBox, steExpBox, stealth, DEX, STE));
+		steExpBox.addItemListener(new ExpertiseListener(steProfBox, steExpBox, stealth, DEX, STE));
+
 		dexPanel.add(dex);
 		dexPanel.add(Box.createRigidArea(VERTICAL_GAP));
 		dexPanel.add(score);
 		dexPanel.add(Box.createRigidArea(VERTICAL_GAP));
 		dexPanel.add(mod);
 		
-		savePanel.add(saveBox);
-		savePanel.add(save);
+		savePanel.add(dexSaveBox);
+		savePanel.add(dexSave);
 		dexPanel.add(savePanel);
 		
 		acroPanel.add(acroExpBox);
@@ -1002,11 +746,7 @@ public class MonsterBuilder extends JSplitPane {
 	 * then adding listener here to that changing proficiency will automatically update
 	 * skills and saves
 	 */
-	private JPanel getCon(JTextField proficiency) {
-		final String CON = "CON";
-		int conScore = monster.getAbilityScore(CON);
-		int conMod = Math.floorDiv(conScore - 10, 2);
-		
+	private JPanel getCon() {
 		JPanel conPanel = new JPanel();
 		conPanel.setMinimumSize(scorePanelSize);
 		conPanel.setPreferredSize(scorePanelSize);
@@ -1018,92 +758,38 @@ public class MonsterBuilder extends JSplitPane {
 		JLabel con = new JLabel(CON);
 		con.setAlignmentX(Component.CENTER_ALIGNMENT);
 		con.setFont(new Font(con.getFont().getName(), Font.BOLD, 15));
-		JTextField score = new JTextField(Integer.toString(conScore));
-		score.setMinimumSize(new Dimension(30, 20));
-		score.setPreferredSize(new Dimension(30, 20));
-		score.setMaximumSize(new Dimension(30, 20));
-		score.setHorizontalAlignment(JTextField.CENTER);
-		String modifier = signBonus(conMod);
-		JLabel mod = new JLabel("(" + modifier + ")");
+		JComboBox score = new JComboBox(scores);
+		score.setMaximumSize(new Dimension(45, 20));
+		score.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		JLabel mod = new JLabel();
 		mod.setAlignmentX(Component.CENTER_ALIGNMENT);
 		mod.setFont(new Font(mod.getFont().getName(), Font.PLAIN, mod.getFont().getSize()));
 		
 		JPanel savePanel = new JPanel();
 		savePanel.setLayout(new BoxLayout(savePanel, BoxLayout.X_AXIS));
-		JCheckBox saveBox = new JCheckBox();
-		saveBox.setSelected(monster.getAbilityProficiency(CON));
-		JLabel save = new JLabel("Saving Throws: " + signBonus(calcBonus(conMod, monster.getProficiency(),
-			monster.getAbilityProficiency(CON), false)));
-		save.setFont(new Font(save.getFont().getName(), Font.PLAIN, save.getFont().getSize()));
-		
-		//listeners for Score text field
-		score.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyChar() >= '0' && e.getKeyChar() <= '9' || (e.getKeyCode() == KeyEvent.VK_BACK_SPACE 
-					|| e.getKeyCode() == KeyEvent.VK_DELETE))
-					score.setEditable(true);
-					
-				else
-					score.setEditable(false);
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent e) {
-				if (score.getText().equals(""))
-					score.setText("0");
-					
-				if (score.getText().length() > 1 && score.getText().charAt(0) == '0')
-					score.setText(score.getText().substring(1));
-					
-				int num = Integer.parseInt(score.getText());
-				monster.setAbilityScore(CON, num);
-				int scoreMod = Math.floorDiv(num - 10, 2);
-				mod.setText("(" + signBonus(scoreMod) + ")");
-				save.setText("Saving Throws: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getAbilityProficiency(CON), false)));
-			}
-		});
-		
-		//saving throw checkbox listener
-		saveBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setAbilityProficiency(CON, true);
-					
-				else
-					monster.setAbilityProficiency(CON, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				save.setText("Saving Throws: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getAbilityProficiency(CON), false)));
-			}
-		});
-		
-		DeferredDocumentListener listener = new DeferredDocumentListener (new ActionListener() {
+		conSaveBox = new JCheckBox();
+		conSaveBox.setSelected(monster.getAbilityProficiency(CON));
+		conSave = new JLabel();
+		conSave.setFont(new Font(conSave.getFont().getName(), Font.PLAIN, conSave.getFont().getSize()));
+
+		score.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int num = Integer.parseInt(score.getText());
-				monster.setAbilityScore(CON, num);
-				int scoreMod = Math.floorDiv(num - 10, 2);
-				mod.setText("(" + signBonus(scoreMod) + ")");
-				save.setText("Saving Throws: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getAbilityProficiency(CON), false)));
+				monster.setAbilityScore(CON, (Integer) score.getSelectedItem());
+				updateAbilityModifier(mod, CON);
+				updateSavingThrow(conSave, conSaveBox, CON);
 			}
 		});
-		
-		proficiency.getDocument().addDocumentListener(listener);
-		proficiency.addFocusListener(new FocusListener() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				listener.start();
-			}
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				listener.stop();
+
+		//saving throw checkbox listener
+		conSaveBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				updateSavingThrow(conSave, conSaveBox, CON);
 			}
 		});
+
+		score.setSelectedItem(monster.getAbilityScore(CON));
 		
 		conPanel.add(con);
 		conPanel.add(Box.createRigidArea(VERTICAL_GAP));
@@ -1111,8 +797,8 @@ public class MonsterBuilder extends JSplitPane {
 		conPanel.add(Box.createRigidArea(VERTICAL_GAP));
 		conPanel.add(mod);
 		
-		savePanel.add(saveBox);
-		savePanel.add(save);
+		savePanel.add(conSaveBox);
+		savePanel.add(conSave);
 		conPanel.add(savePanel);
 		
 		return conPanel;
@@ -1124,11 +810,7 @@ public class MonsterBuilder extends JSplitPane {
 	 * then adding listener here to that changing proficiency will automatically update
 	 * skills and saves
 	 */
-	private JPanel getInt(JTextField proficiency) {
-		final String INT = "INT";
-		int intScore = monster.getAbilityScore(INT);
-		int intMod = Math.floorDiv(intScore - 10, 2);
-		
+	private JPanel getInt() {
 		JPanel intPanel = new JPanel();
 		intPanel.setMinimumSize(scorePanelSize);
 		intPanel.setPreferredSize(scorePanelSize);
@@ -1140,332 +822,103 @@ public class MonsterBuilder extends JSplitPane {
 		JLabel inte = new JLabel(INT);
 		inte.setAlignmentX(Component.CENTER_ALIGNMENT);
 		inte.setFont(new Font(inte.getFont().getName(), Font.BOLD, 15));
-		JTextField score = new JTextField(Integer.toString(intScore));
-		score.setMinimumSize(new Dimension(30, 20));
-		score.setPreferredSize(new Dimension(30, 20));
-		score.setMaximumSize(new Dimension(30, 20));
-		score.setHorizontalAlignment(JTextField.CENTER);
-		String modifier = signBonus(intMod);
-		JLabel mod = new JLabel("(" + modifier + ")");
+		JComboBox score = new JComboBox(scores);
+		score.setMaximumSize(new Dimension(45, 20));
+		score.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		JLabel mod = new JLabel();
 		mod.setAlignmentX(Component.CENTER_ALIGNMENT);
 		mod.setFont(new Font(mod.getFont().getName(), Font.PLAIN, mod.getFont().getSize()));
 		
 		JPanel savePanel = new JPanel();
 		savePanel.setLayout(new BoxLayout(savePanel, BoxLayout.X_AXIS));
-		JCheckBox saveBox = new JCheckBox();
-		saveBox.setSelected(monster.getAbilityProficiency(INT));
-		JLabel save = new JLabel("Saving Throws: " + signBonus(calcBonus(intMod, monster.getProficiency(),
-			monster.getAbilityProficiency(INT), false)));
-		save.setFont(new Font(save.getFont().getName(), Font.PLAIN, save.getFont().getSize()));
-		
-		final String ARC = "arcana";
+		intSaveBox = new JCheckBox();
+		intSaveBox.setSelected(monster.getAbilityProficiency(INT));
+		intSave = new JLabel();
+		intSave.setFont(new Font(intSave.getFont().getName(), Font.PLAIN, intSave.getFont().getSize()));
+
 		JPanel arcPanel = new JPanel();
 		arcPanel.setLayout(new BoxLayout(arcPanel, BoxLayout.X_AXIS));
-		JLabel arcana = new JLabel("Arcana: " + signBonus(calcBonus(intMod, monster.getProficiency(),
-					monster.getSkillProficienct(ARC), monster.getSkillExpertise(ARC))));
+		arcana = new JLabel();
 		arcana.setFont(new Font(arcana.getFont().getName(), Font.PLAIN, arcana.getFont().getSize()));
 		JCheckBox arcProfBox = new JCheckBox();
 		JCheckBox arcExpBox = new JCheckBox();
-		arcProfBox.setSelected(monster.getSkillProficienct(ARC));
+		arcProfBox.setSelected(monster.getSkillProficient(ARC));
 		arcExpBox.setSelected(monster.getSkillExpertise(ARC));
-		
-		final String HIS = "history";
+
 		JPanel hisPanel = new JPanel();
 		hisPanel.setLayout(new BoxLayout(hisPanel, BoxLayout.X_AXIS));
-		JLabel history = new JLabel("History: " + signBonus(calcBonus(intMod, monster.getProficiency(),
-					monster.getSkillProficienct(HIS), monster.getSkillExpertise(HIS))));
+		history = new JLabel();
 		history.setFont(new Font(history.getFont().getName(), Font.PLAIN, history.getFont().getSize()));
 		JCheckBox hisProfBox = new JCheckBox();
 		JCheckBox hisExpBox = new JCheckBox();
-		hisProfBox.setSelected(monster.getSkillProficienct(HIS));
+		hisProfBox.setSelected(monster.getSkillProficient(HIS));
 		hisExpBox.setSelected(monster.getSkillExpertise(HIS));
-		
-		final String INV = "investigation";
+
 		JPanel invPanel = new JPanel();
 		invPanel.setLayout(new BoxLayout(invPanel, BoxLayout.X_AXIS));
-		JLabel investigation = new JLabel("Investigation: " + signBonus(calcBonus(intMod, monster.getProficiency(),
-					monster.getSkillProficienct(INV), monster.getSkillExpertise(INV))));
+		investigation = new JLabel();
 		investigation.setFont(new Font(investigation.getFont().getName(), Font.PLAIN, investigation.getFont().getSize()));
 		JCheckBox invProfBox = new JCheckBox();
 		JCheckBox invExpBox = new JCheckBox();
-		invProfBox.setSelected(monster.getSkillProficienct(INV));
+		invProfBox.setSelected(monster.getSkillProficient(INV));
 		invExpBox.setSelected(monster.getSkillExpertise(INV));
-		
-		final String NAT = "nature";
+
 		JPanel natPanel = new JPanel();
 		natPanel.setLayout(new BoxLayout(natPanel, BoxLayout.X_AXIS));
-		JLabel nature = new JLabel("Nature: " + signBonus(calcBonus(intMod, monster.getProficiency(),
-					monster.getSkillProficienct(NAT), monster.getSkillExpertise(NAT))));
+		nature = new JLabel();
 		nature.setFont(new Font(nature.getFont().getName(), Font.PLAIN, nature.getFont().getSize()));
 		JCheckBox natProfBox = new JCheckBox();
 		JCheckBox natExpBox = new JCheckBox();
-		natProfBox.setSelected(monster.getSkillProficienct(NAT));
+		natProfBox.setSelected(monster.getSkillProficient(NAT));
 		natExpBox.setSelected(monster.getSkillExpertise(NAT));
-		
-		final String REL = "religion";
+
 		JPanel relPanel = new JPanel();
 		relPanel.setLayout(new BoxLayout(relPanel, BoxLayout.X_AXIS));
-		JLabel religion = new JLabel("Religion: " + signBonus(calcBonus(intMod, monster.getProficiency(),
-					monster.getSkillProficienct(REL), monster.getSkillExpertise(REL))));
+		religion = new JLabel();
 		religion.setFont(new Font(religion.getFont().getName(), Font.PLAIN, religion.getFont().getSize()));
 		JCheckBox relProfBox = new JCheckBox();
 		JCheckBox relExpBox = new JCheckBox();
-		relProfBox.setSelected(monster.getSkillProficienct(REL));
+		relProfBox.setSelected(monster.getSkillProficient(REL));
 		relExpBox.setSelected(monster.getSkillExpertise(REL));
-		
-		//listeners for Score text field
-		score.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyChar() >= '0' && e.getKeyChar() <= '9' || (e.getKeyCode() == KeyEvent.VK_BACK_SPACE 
-					|| e.getKeyCode() == KeyEvent.VK_DELETE))
-					score.setEditable(true);
-					
-				else
-					score.setEditable(false);
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent e) {
-				if (score.getText().equals(""))
-					score.setText("0");
-					
-				if (score.getText().length() > 1 && score.getText().charAt(0) == '0')
-					score.setText(score.getText().substring(1));
-					
-				int num = Integer.parseInt(score.getText());
-				monster.setAbilityScore(INT, num);
-				int scoreMod = Math.floorDiv(num - 10, 2);
-				mod.setText("(" + signBonus(scoreMod) + ")");
-				save.setText("Saving Throws: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getAbilityProficiency(INT), false)));
-				arcana.setText("Arcana: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(ARC), monster.getSkillExpertise(ARC))));
-				history.setText("History: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(HIS), monster.getSkillExpertise(HIS))));
-				investigation.setText("Investigation: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(INV), monster.getSkillExpertise(INV))));
-				nature.setText("Nature: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(NAT), monster.getSkillExpertise(NAT))));
-				religion.setText("Religion: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(REL), monster.getSkillExpertise(REL))));
-			}
-		});
-		
-		//saving throw checkbox listener
-		saveBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setAbilityProficiency(INT, true);
-					
-				else
-					monster.setAbilityProficiency(INT, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				save.setText("Saving Throws: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getAbilityProficiency(INT), false)));
-			}
-		});
-		
-		//arcana checkbox listeners
-		arcProfBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setSkillProficiency(ARC, true);
-					
-				else {
-					monster.setSkillProficiency(ARC, false);
-					arcExpBox.setSelected(false);
-				}
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				arcana.setText("Arcana: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(ARC), monster.getSkillExpertise(ARC))));
-			}
-		});
-		
-		arcExpBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1) {
-					monster.setSkillExpertise(ARC, true);
-					arcProfBox.setSelected(true);
-				}
-					
-				else
-					monster.setSkillExpertise(ARC, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				arcana.setText("Arcana: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(ARC), monster.getSkillExpertise(ARC))));
-			}
-		});
-		
-		//history checkbox listeners
-		hisProfBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setSkillProficiency(HIS, true);
-					
-				else {
-					monster.setSkillProficiency(HIS, false);
-					hisExpBox.setSelected(false);
-				}
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				history.setText("History: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(HIS), monster.getSkillExpertise(HIS))));
-			}
-		});
-		
-		hisExpBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1) {
-					monster.setSkillExpertise(HIS, true);
-					hisProfBox.setSelected(true);
-				}
-					
-				else
-					monster.setSkillExpertise(HIS, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				history.setText("History: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(HIS), monster.getSkillExpertise(HIS))));
-			}
-		});
-		
-		//investigation checkbox listeners
-		invProfBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setSkillProficiency(INV, true);
-					
-				else {
-					monster.setSkillProficiency(INV, false);
-					invExpBox.setSelected(false);
-				}
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				investigation.setText("Investigation: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(INV), monster.getSkillExpertise(INV))));
-			}
-		});
-		
-		invExpBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1) {
-					monster.setSkillExpertise(INV, true);
-					invProfBox.setSelected(true);
-				}
-					
-				else
-					monster.setSkillExpertise(INV, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				investigation.setText("Investigation: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(INT), monster.getSkillExpertise(INV))));
-			}
-		});
-		
-		//nature checkbox listeners
-		natProfBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setSkillProficiency(NAT, true);
-					
-				else {
-					monster.setSkillProficiency(NAT, false);
-					natExpBox.setSelected(false);
-				}
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				nature.setText("Nature: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(NAT), monster.getSkillExpertise(NAT))));
-			}
-		});
-		
-		natExpBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1) {
-					monster.setSkillExpertise(NAT, true);
-					natProfBox.setSelected(true);
-				}
-					
-				else
-					monster.setSkillExpertise(NAT, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				nature.setText("Nature: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(NAT), monster.getSkillExpertise(NAT))));
-			}
-		});
-		
-		//religion checkbox listeners
-		relProfBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setSkillProficiency(REL, true);
-					
-				else {
-					monster.setSkillProficiency(REL, false);
-					relExpBox.setSelected(false);
-				}
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				religion.setText("Religion: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(REL), monster.getSkillExpertise(REL))));
-			}
-		});
-		
-		relExpBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1) {
-					monster.setSkillExpertise(REL, true);
-					relProfBox.setSelected(true);
-				}
-					
-				else
-					monster.setSkillExpertise(REL, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				religion.setText("Religion: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(REL), monster.getSkillExpertise(REL))));
-			}
-		});
-		
-		DeferredDocumentListener listener = new DeferredDocumentListener (new ActionListener() {
+
+		score.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int num = Integer.parseInt(score.getText());
-				monster.setAbilityScore(INT, num);
-				int scoreMod = Math.floorDiv(num - 10, 2);
-				mod.setText("(" + signBonus(scoreMod) + ")");
-				save.setText("Saving Throws: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getAbilityProficiency(INT), false)));
-				arcana.setText("Arcana: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(ARC), monster.getSkillExpertise(ARC))));
-				history.setText("History: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(HIS), monster.getSkillExpertise(HIS))));
-				investigation.setText("Investigation: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(INV), monster.getSkillExpertise(INV))));
-				nature.setText("Nature: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(NAT), monster.getSkillExpertise(NAT))));
-				religion.setText("Religion: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(REL), monster.getSkillExpertise(REL))));
+				monster.setAbilityScore(INT, (Integer) score.getSelectedItem());
+				updateAbilityModifier(mod, INT);
+				updateSavingThrow(intSave, intSaveBox, INT);
+				updateSkillText(arcana, INT, ARC);
+				updateSkillText(history, INT, HIS);
+				updateSkillText(investigation, INT, INV);
+				updateSkillText(nature, INT, NAT);
+				updateSkillText(religion, INT, REL);
 			}
 		});
-		
-		proficiency.getDocument().addDocumentListener(listener);
-		proficiency.addFocusListener(new FocusListener() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				listener.start();
-			}
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				listener.stop();
+
+		//saving throw checkbox listener
+		intSaveBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				updateSavingThrow(intSave, intSaveBox, INT);
 			}
 		});
+
+		score.setSelectedItem(monster.getAbilityScore(INT));
+
+		arcProfBox.addItemListener(new ProficiencyListener(arcProfBox, arcExpBox, arcana, INT, ARC));
+		arcExpBox.addItemListener(new ExpertiseListener(arcProfBox, arcExpBox, arcana, INT, ARC));
+
+		hisProfBox.addItemListener(new ProficiencyListener(hisProfBox, hisExpBox, history, INT, HIS));
+		hisExpBox.addItemListener(new ExpertiseListener(hisProfBox, hisExpBox, history, INT, HIS));
+
+		invProfBox.addItemListener(new ProficiencyListener(invProfBox, invExpBox, investigation, INT, INV));
+		invExpBox.addItemListener(new ExpertiseListener(invProfBox, invExpBox, investigation, INT, INV));
+
+		natProfBox.addItemListener(new ProficiencyListener(natProfBox, natExpBox, nature, INT, NAT));
+		natExpBox.addItemListener(new ExpertiseListener(natProfBox, natExpBox, nature, INT, NAT));
+
+		relProfBox.addItemListener(new ProficiencyListener(relProfBox, relExpBox, religion, INT, REL));
+		relExpBox.addItemListener(new ExpertiseListener(relProfBox, relExpBox, religion, INT, REL));
 		
 		intPanel.add(inte);
 		intPanel.add(Box.createRigidArea(VERTICAL_GAP));
@@ -1473,8 +926,8 @@ public class MonsterBuilder extends JSplitPane {
 		intPanel.add(Box.createRigidArea(VERTICAL_GAP));
 		intPanel.add(mod);
 		
-		savePanel.add(saveBox);
-		savePanel.add(save);
+		savePanel.add(intSaveBox);
+		savePanel.add(intSave);
 		intPanel.add(savePanel);
 		
 		arcPanel.add(arcExpBox);
@@ -1515,11 +968,7 @@ public class MonsterBuilder extends JSplitPane {
 	 * then adding listener here to that changing proficiency will automatically update
 	 * skills and saves
 	 */
-	private JPanel getWis(JTextField proficiency) {
-		final String WIS = "WIS";
-		int wisScore = monster.getAbilityScore(WIS);
-		int wisMod = Math.floorDiv(wisScore - 10, 2);
-		
+	private JPanel getWis() {
 		JPanel wisPanel = new JPanel();
 		wisPanel.setMinimumSize(scorePanelSize);
 		wisPanel.setPreferredSize(scorePanelSize);
@@ -1531,332 +980,103 @@ public class MonsterBuilder extends JSplitPane {
 		JLabel wis = new JLabel(WIS);
 		wis.setAlignmentX(Component.CENTER_ALIGNMENT);
 		wis.setFont(new Font(wis.getFont().getName(), Font.BOLD, 15));
-		JTextField score = new JTextField(Integer.toString(wisScore));
-		score.setMinimumSize(new Dimension(30, 20));
-		score.setPreferredSize(new Dimension(30, 20));
-		score.setMaximumSize(new Dimension(30, 20));
-		score.setHorizontalAlignment(JTextField.CENTER);
-		String modifier = signBonus(wisMod);
-		JLabel mod = new JLabel("(" + modifier + ")");
+		JComboBox score = new JComboBox(scores);
+		score.setMaximumSize(new Dimension(45, 20));
+		score.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		JLabel mod = new JLabel();
 		mod.setAlignmentX(Component.CENTER_ALIGNMENT);
 		mod.setFont(new Font(mod.getFont().getName(), Font.PLAIN, mod.getFont().getSize()));
 		
 		JPanel savePanel = new JPanel();
 		savePanel.setLayout(new BoxLayout(savePanel, BoxLayout.X_AXIS));
-		JCheckBox saveBox = new JCheckBox();
-		saveBox.setSelected(monster.getAbilityProficiency(WIS));
-		JLabel save = new JLabel("Saving Throws: " + signBonus(calcBonus(wisMod, monster.getProficiency(),
-			monster.getAbilityProficiency(WIS), false)));
-		save.setFont(new Font(save.getFont().getName(), Font.PLAIN, save.getFont().getSize()));
-		
-		final String ANI = "animal handling";
+		wisSaveBox = new JCheckBox();
+		wisSaveBox.setSelected(monster.getAbilityProficiency(WIS));
+		wisSave = new JLabel();
+		wisSave.setFont(new Font(wisSave.getFont().getName(), Font.PLAIN, wisSave.getFont().getSize()));
+
 		JPanel aniPanel = new JPanel();
 		aniPanel.setLayout(new BoxLayout(aniPanel, BoxLayout.X_AXIS));
-		JLabel animal = new JLabel("Animal Handling: " + signBonus(calcBonus(wisMod, monster.getProficiency(),
-					monster.getSkillProficienct(ANI), monster.getSkillExpertise(ANI))));
+		animal = new JLabel();
 		animal.setFont(new Font(animal.getFont().getName(), Font.PLAIN, animal.getFont().getSize()));
 		JCheckBox aniProfBox = new JCheckBox();
 		JCheckBox aniExpBox = new JCheckBox();
-		aniProfBox.setSelected(monster.getSkillProficienct(ANI));
+		aniProfBox.setSelected(monster.getSkillProficient(ANI));
 		aniExpBox.setSelected(monster.getSkillExpertise(ANI));
-		
-		final String INS = "insight";
+
 		JPanel insPanel = new JPanel();
 		insPanel.setLayout(new BoxLayout(insPanel, BoxLayout.X_AXIS));
-		JLabel insight = new JLabel("Insight: " + signBonus(calcBonus(wisMod, monster.getProficiency(),
-					monster.getSkillProficienct(INS), monster.getSkillExpertise(INS))));
+		insight = new JLabel();
 		insight.setFont(new Font(insight.getFont().getName(), Font.PLAIN, insight.getFont().getSize()));
 		JCheckBox insProfBox = new JCheckBox();
 		JCheckBox insExpBox = new JCheckBox();
-		insProfBox.setSelected(monster.getSkillProficienct(INS));
+		insProfBox.setSelected(monster.getSkillProficient(INS));
 		insExpBox.setSelected(monster.getSkillExpertise(INS));
-		
-		final String MED = "medicine";
+
 		JPanel medPanel = new JPanel();
 		medPanel.setLayout(new BoxLayout(medPanel, BoxLayout.X_AXIS));
-		JLabel medicine = new JLabel("Medicine: " + signBonus(calcBonus(wisMod, monster.getProficiency(),
-					monster.getSkillProficienct(MED), monster.getSkillExpertise(MED))));
+		medicine = new JLabel();
 		medicine.setFont(new Font(medicine.getFont().getName(), Font.PLAIN, medicine.getFont().getSize()));
 		JCheckBox medProfBox = new JCheckBox();
 		JCheckBox medExpBox = new JCheckBox();
-		medProfBox.setSelected(monster.getSkillProficienct(MED));
+		medProfBox.setSelected(monster.getSkillProficient(MED));
 		medExpBox.setSelected(monster.getSkillExpertise(MED));
-		
-		final String PER = "perception";
+
 		JPanel perPanel = new JPanel();
 		perPanel.setLayout(new BoxLayout(perPanel, BoxLayout.X_AXIS));
-		JLabel perception = new JLabel("Perception: " + signBonus(calcBonus(wisMod, monster.getProficiency(),
-					monster.getSkillProficienct(PER), monster.getSkillExpertise(PER))));
+		perception = new JLabel();
 		perception.setFont(new Font(perception.getFont().getName(), Font.PLAIN, perception.getFont().getSize()));
 		JCheckBox perProfBox = new JCheckBox();
 		JCheckBox perExpBox = new JCheckBox();
-		perProfBox.setSelected(monster.getSkillProficienct(PER));
+		perProfBox.setSelected(monster.getSkillProficient(PER));
 		perExpBox.setSelected(monster.getSkillExpertise(PER));
-		
-		final String SUR = "survival";
+
 		JPanel surPanel = new JPanel();
 		surPanel.setLayout(new BoxLayout(surPanel, BoxLayout.X_AXIS));
-		JLabel survival = new JLabel("Survival: " + signBonus(calcBonus(wisMod, monster.getProficiency(),
-					monster.getSkillProficienct(SUR), monster.getSkillExpertise(SUR))));
+		survival = new JLabel();
 		survival.setFont(new Font(survival.getFont().getName(), Font.PLAIN, survival.getFont().getSize()));
 		JCheckBox surProfBox = new JCheckBox();
 		JCheckBox surExpBox = new JCheckBox();
-		surProfBox.setSelected(monster.getSkillProficienct(SUR));
+		surProfBox.setSelected(monster.getSkillProficient(SUR));
 		surExpBox.setSelected(monster.getSkillExpertise(SUR));
-		
-		//listeners for Score text field
-		score.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyChar() >= '0' && e.getKeyChar() <= '9' || (e.getKeyCode() == KeyEvent.VK_BACK_SPACE 
-					|| e.getKeyCode() == KeyEvent.VK_DELETE))
-					score.setEditable(true);
-					
-				else
-					score.setEditable(false);
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent e) {
-				if (score.getText().equals(""))
-					score.setText("0");
-					
-				if (score.getText().length() > 1 && score.getText().charAt(0) == '0')
-					score.setText(score.getText().substring(1));
-					
-				int num = Integer.parseInt(score.getText());
-				monster.setAbilityScore(WIS, num);
-				int scoreMod = Math.floorDiv(num - 10, 2);
-				mod.setText("(" + signBonus(scoreMod) + ")");
-				save.setText("Saving Throws: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getAbilityProficiency(WIS), false)));
-				animal.setText("Animal Handling: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(ANI), monster.getSkillExpertise(ANI))));
-				insight.setText("Insight: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(INS), monster.getSkillExpertise(INS))));
-				medicine.setText("Medicine: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(MED), monster.getSkillExpertise(MED))));
-				perception.setText("Perception: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(PER), monster.getSkillExpertise(PER))));
-				survival.setText("Survival: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(SUR), monster.getSkillExpertise(SUR))));
-			}
-		});
-		
-		//saving throw checkbox listener
-		saveBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setAbilityProficiency(WIS, true);
-					
-				else
-					monster.setAbilityProficiency(WIS, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				save.setText("Saving Throws: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getAbilityProficiency(WIS), false)));
-			}
-		});
-		
-		//animal handling checkbox listeners
-		aniProfBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setSkillProficiency(ANI, true);
-					
-				else {
-					monster.setSkillProficiency(ANI, false);
-					aniExpBox.setSelected(false);
-				}
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				animal.setText("Animal Handling: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(ANI), monster.getSkillExpertise(ANI))));
-			}
-		});
-		
-		aniExpBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1) {
-					monster.setSkillExpertise(ANI, true);
-					aniProfBox.setSelected(true);
-				}
-					
-				else
-					monster.setSkillExpertise(ANI, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				animal.setText("Animal Handling: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(ANI), monster.getSkillExpertise(ANI))));
-			}
-		});
-		
-		//insight checkbox listeners
-		insProfBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setSkillProficiency(INS, true);
-					
-				else {
-					monster.setSkillProficiency(INS, false);
-					insExpBox.setSelected(false);
-				}
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				insight.setText("Insight: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(INS), monster.getSkillExpertise(INS))));
-			}
-		});
-		
-		insExpBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1) {
-					monster.setSkillExpertise(INS, true);
-					insProfBox.setSelected(true);
-				}
-					
-				else
-					monster.setSkillExpertise(INS, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				insight.setText("Insight: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(INS), monster.getSkillExpertise(INS))));
-			}
-		});
-		
-		//medicine checkbox listeners
-		medProfBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setSkillProficiency(MED, true);
-					
-				else {
-					monster.setSkillProficiency(MED, false);
-					medExpBox.setSelected(false);
-				}
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				medicine.setText("Medicine: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(MED), monster.getSkillExpertise(MED))));
-			}
-		});
-		
-		medExpBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1) {
-					monster.setSkillExpertise(MED, true);
-					medProfBox.setSelected(true);
-				}
-					
-				else
-					monster.setSkillExpertise(MED, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				medicine.setText("Medicine: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(MED), monster.getSkillExpertise(MED))));
-			}
-		});
-		
-		//perception checkbox listeners
-		perProfBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setSkillProficiency(PER, true);
-					
-				else {
-					monster.setSkillProficiency(PER, false);
-					perExpBox.setSelected(false);
-				}
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				perception.setText("Perception: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(PER), monster.getSkillExpertise(PER))));
-			}
-		});
-		
-		perExpBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1) {
-					monster.setSkillExpertise(PER, true);
-					perProfBox.setSelected(true);
-				}
-					
-				else
-					monster.setSkillExpertise(PER, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				perception.setText("Perception: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(PER), monster.getSkillExpertise(PER))));
-			}
-		});
-		
-		//survival checkbox listeners
-		surProfBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setSkillProficiency(SUR, true);
-					
-				else {
-					monster.setSkillProficiency(SUR, false);
-					surExpBox.setSelected(false);
-				}
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				survival.setText("Survival: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(SUR), monster.getSkillExpertise(SUR))));
-			}
-		});
-		
-		surExpBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1) {
-					monster.setSkillExpertise(SUR, true);
-					surProfBox.setSelected(true);
-				}
-					
-				else
-					monster.setSkillExpertise(SUR, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				survival.setText("Survival: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(SUR), monster.getSkillExpertise(SUR))));
-			}
-		});
-		
-		DeferredDocumentListener listener = new DeferredDocumentListener (new ActionListener() {
+
+		score.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int num = Integer.parseInt(score.getText());
-				monster.setAbilityScore(WIS, num);
-				int scoreMod = Math.floorDiv(num - 10, 2);
-				mod.setText("(" + signBonus(scoreMod) + ")");
-				save.setText("Saving Throws: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getAbilityProficiency(WIS), false)));
-				animal.setText("Animal Handling: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(ANI), monster.getSkillExpertise(ANI))));
-				insight.setText("Insight: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(INS), monster.getSkillExpertise(INS))));
-				medicine.setText("Medicine: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(MED), monster.getSkillExpertise(MED))));
-				perception.setText("Perception: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(PER), monster.getSkillExpertise(PER))));
-				survival.setText("Survival: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(SUR), monster.getSkillExpertise(SUR))));
+				monster.setAbilityScore(WIS, (Integer) score.getSelectedItem());
+				updateAbilityModifier(mod, WIS);
+				updateSavingThrow(wisSave, wisSaveBox, WIS);
+				updateSkillText(animal, WIS, ANI);
+				updateSkillText(insight, WIS, INS);
+				updateSkillText(medicine, WIS, MED);
+				updateSkillText(perception, WIS, PER);
+				updateSkillText(survival, WIS, SUR);
 			}
 		});
-		
-		proficiency.getDocument().addDocumentListener(listener);
-		proficiency.addFocusListener(new FocusListener() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				listener.start();
-			}
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				listener.stop();
+
+		//saving throw checkbox listener
+		wisSaveBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				updateSavingThrow(wisSave, wisSaveBox, WIS);
 			}
 		});
+
+		score.setSelectedItem(monster.getAbilityScore(WIS));
+
+		aniProfBox.addItemListener(new ProficiencyListener(aniProfBox, aniExpBox, animal, WIS, ANI));
+		aniExpBox.addItemListener(new ExpertiseListener(aniProfBox, aniExpBox, animal, WIS, ANI));
+
+		insProfBox.addItemListener(new ProficiencyListener(insProfBox, insExpBox, insight, WIS, INS));
+		insExpBox.addItemListener(new ExpertiseListener(insProfBox, insExpBox, insight, WIS, INS));
+
+		medProfBox.addItemListener(new ProficiencyListener(medProfBox, medExpBox, medicine, WIS, MED));
+		medExpBox.addItemListener(new ExpertiseListener(medProfBox, medExpBox, medicine, WIS, MED));
+
+		perProfBox.addItemListener(new ProficiencyListener(perProfBox, perExpBox, perception, WIS, PER));
+		perExpBox.addItemListener(new ExpertiseListener(perProfBox, perExpBox, perception, WIS, PER));
+
+		surProfBox.addItemListener(new ProficiencyListener(surProfBox, surExpBox, survival, WIS, SUR));
+		surExpBox.addItemListener(new ExpertiseListener(surProfBox, surExpBox, survival, WIS, SUR));
 		
 		wisPanel.add(wis);
 		wisPanel.add(Box.createRigidArea(VERTICAL_GAP));
@@ -1864,8 +1084,8 @@ public class MonsterBuilder extends JSplitPane {
 		wisPanel.add(Box.createRigidArea(VERTICAL_GAP));
 		wisPanel.add(mod);
 		
-		savePanel.add(saveBox);
-		savePanel.add(save);
+		savePanel.add(wisSaveBox);
+		savePanel.add(wisSave);
 		wisPanel.add(savePanel);
 		
 		aniPanel.add(aniExpBox);
@@ -1906,11 +1126,7 @@ public class MonsterBuilder extends JSplitPane {
 	 * then adding listener here to that changing proficiency will automatically update
 	 * skills and saves
 	 */
-	private JPanel getCha(JTextField proficiency) {
-		final String CHA = "CHA";
-		int chaScore = monster.getAbilityScore(CHA);
-		int chaMod = Math.floorDiv(chaScore - 10, 2);
-		
+	private JPanel getCha() {
 		JPanel chaPanel = new JPanel();
 		chaPanel.setMinimumSize(scorePanelSize);
 		chaPanel.setPreferredSize(scorePanelSize);
@@ -1922,284 +1138,90 @@ public class MonsterBuilder extends JSplitPane {
 		JLabel cha = new JLabel(CHA);
 		cha.setAlignmentX(Component.CENTER_ALIGNMENT);
 		cha.setFont(new Font(cha.getFont().getName(), Font.BOLD, 15));
-		JTextField score = new JTextField(Integer.toString(chaScore));
-		score.setMinimumSize(new Dimension(30, 20));
-		score.setPreferredSize(new Dimension(30, 20));
-		score.setMaximumSize(new Dimension(30, 20));
-		score.setHorizontalAlignment(JTextField.CENTER);
-		String modifier = signBonus(chaMod);
-		JLabel mod = new JLabel("(" + modifier + ")");
+		JComboBox score = new JComboBox(scores);
+		score.setMaximumSize(new Dimension(45, 20));
+		score.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		JLabel mod = new JLabel();
 		mod.setAlignmentX(Component.CENTER_ALIGNMENT);
 		mod.setFont(new Font(mod.getFont().getName(), Font.PLAIN, mod.getFont().getSize()));
 		
 		JPanel savePanel = new JPanel();
 		savePanel.setLayout(new BoxLayout(savePanel, BoxLayout.X_AXIS));
-		JCheckBox saveBox = new JCheckBox();
-		saveBox.setSelected(monster.getAbilityProficiency(CHA));
-		JLabel save = new JLabel("Saving Throws: " + signBonus(calcBonus(chaMod, monster.getProficiency(),
-			monster.getAbilityProficiency(CHA), false)));
-		save.setFont(new Font(save.getFont().getName(), Font.PLAIN, save.getFont().getSize()));
-		
-		final String DEC = "deception";
+		chaSaveBox = new JCheckBox();
+		chaSaveBox.setSelected(monster.getAbilityProficiency(CHA));
+		chaSave = new JLabel();
+		chaSave.setFont(new Font(chaSave.getFont().getName(), Font.PLAIN, chaSave.getFont().getSize()));
+
 		JPanel decPanel = new JPanel();
 		decPanel.setLayout(new BoxLayout(decPanel, BoxLayout.X_AXIS));
-		JLabel deception = new JLabel("Deception: " + signBonus(calcBonus(chaMod, monster.getProficiency(),
-					monster.getSkillProficienct(DEC), monster.getSkillExpertise(DEC))));
+		deception = new JLabel();
 		deception.setFont(new Font(deception.getFont().getName(), Font.PLAIN, deception.getFont().getSize()));
 		JCheckBox decProfBox = new JCheckBox();
 		JCheckBox decExpBox = new JCheckBox();
-		decProfBox.setSelected(monster.getSkillProficienct(DEC));
+		decProfBox.setSelected(monster.getSkillProficient(DEC));
 		decExpBox.setSelected(monster.getSkillExpertise(DEC));
-		
-		final String INT = "intimidation";
+
 		JPanel intPanel = new JPanel();
 		intPanel.setLayout(new BoxLayout(intPanel, BoxLayout.X_AXIS));
-		JLabel intimidation = new JLabel("Intimidation: " + signBonus(calcBonus(chaMod, monster.getProficiency(),
-					monster.getSkillProficienct(INT), monster.getSkillExpertise(INT))));
+		intimidation = new JLabel();
 		intimidation.setFont(new Font(intimidation.getFont().getName(), Font.PLAIN, intimidation.getFont().getSize()));
 		JCheckBox intProfBox = new JCheckBox();
 		JCheckBox intExpBox = new JCheckBox();
-		intProfBox.setSelected(monster.getSkillProficienct(INT));
-		intExpBox.setSelected(monster.getSkillExpertise(INT));
-		
-		final String PERF = "performance";
+		intProfBox.setSelected(monster.getSkillProficient(INTIM));
+		intExpBox.setSelected(monster.getSkillExpertise(INTIM));
+
 		JPanel perfPanel = new JPanel();
 		perfPanel.setLayout(new BoxLayout(perfPanel, BoxLayout.X_AXIS));
-		JLabel performance = new JLabel("Performance: " + signBonus(calcBonus(chaMod, monster.getProficiency(),
-					monster.getSkillProficienct(PERF), monster.getSkillExpertise(PERF))));
+		performance = new JLabel();
 		performance.setFont(new Font(performance.getFont().getName(), Font.PLAIN, performance.getFont().getSize()));
 		JCheckBox perfProfBox = new JCheckBox();
 		JCheckBox perfExpBox = new JCheckBox();
-		perfProfBox.setSelected(monster.getSkillProficienct(PERF));
+		perfProfBox.setSelected(monster.getSkillProficient(PERF));
 		perfExpBox.setSelected(monster.getSkillExpertise(PERF));
-		
-		final String PERS = "persuasion";
+
 		JPanel persPanel = new JPanel();
 		persPanel.setLayout(new BoxLayout(persPanel, BoxLayout.X_AXIS));
-		JLabel persuasion = new JLabel("Persuasion: " + signBonus(calcBonus(chaMod, monster.getProficiency(),
-					monster.getSkillProficienct(PERS), monster.getSkillExpertise(PERS))));
+		persuasion = new JLabel();
 		persuasion.setFont(new Font(persuasion.getFont().getName(), Font.PLAIN, persuasion.getFont().getSize()));
 		JCheckBox persProfBox = new JCheckBox();
 		JCheckBox persExpBox = new JCheckBox();
-		persProfBox.setSelected(monster.getSkillProficienct(PERS));
+		persProfBox.setSelected(monster.getSkillProficient(PERS));
 		persExpBox.setSelected(monster.getSkillExpertise(PERS));
-		
-		//listeners for Score text field
-		score.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyChar() >= '0' && e.getKeyChar() <= '9' || (e.getKeyCode() == KeyEvent.VK_BACK_SPACE 
-					|| e.getKeyCode() == KeyEvent.VK_DELETE))
-					score.setEditable(true);
-					
-				else
-					score.setEditable(false);
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent e) {
-				if (score.getText().equals(""))
-					score.setText("0");
-					
-				if (score.getText().length() > 1 && score.getText().charAt(0) == '0')
-					score.setText(score.getText().substring(1));
-					
-				int num = Integer.parseInt(score.getText());
-				monster.setAbilityScore(CHA, num);
-				int scoreMod = Math.floorDiv(num - 10, 2);
-				mod.setText("(" + signBonus(scoreMod) + ")");
-				save.setText("Saving Throws: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getAbilityProficiency(CHA), false)));
-				deception.setText("Deception: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(DEC), monster.getSkillExpertise(DEC))));
-				intimidation.setText("Intimidation: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(INT), monster.getSkillExpertise(INT))));
-				performance.setText("Performance: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(PERF), monster.getSkillExpertise(PERF))));
-				persuasion.setText("Persuasion: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(PERS), monster.getSkillExpertise(PERS))));
-			}
-		});
-		
-		//saving throw checkbox listener
-		saveBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setAbilityProficiency(CHA, true);
-					
-				else
-					monster.setAbilityProficiency(CHA, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				save.setText("Saving Throws: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getAbilityProficiency(CHA), false)));
-			}
-		});
-		
-		//deception checkbox listeners
-		decProfBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setSkillProficiency(DEC, true);
-					
-				else {
-					monster.setSkillProficiency(DEC, false);
-					decExpBox.setSelected(false);
-				}
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				deception.setText("Deception: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(DEC), monster.getSkillExpertise(DEC))));
-			}
-		});
-		
-		decExpBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1) {
-					monster.setSkillExpertise(DEC, true);
-					decProfBox.setSelected(true);
-				}
-					
-				else
-					monster.setSkillExpertise(DEC, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				deception.setText("Deception: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(DEC), monster.getSkillExpertise(DEC))));
-			}
-		});
-		
-		//intimidation checkbox listeners
-		intProfBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setSkillProficiency(INT, true);
-					
-				else {
-					monster.setSkillProficiency(INT, false);
-					intExpBox.setSelected(false);
-				}
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				intimidation.setText("Intimidation: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(INT), monster.getSkillExpertise(INT))));
-			}
-		});
-		
-		intExpBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1) {
-					monster.setSkillExpertise(INT, true);
-					intProfBox.setSelected(true);
-				}
-					
-				else
-					monster.setSkillExpertise(INT, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				intimidation.setText("Intimidation: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(INT), monster.getSkillExpertise(INT))));
-			}
-		});
-		
-		//performance checkbox listeners
-		perfProfBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setSkillProficiency(PERF, true);
-					
-				else {
-					monster.setSkillProficiency(PERF, false);
-					perfExpBox.setSelected(false);
-				}
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				performance.setText("Performance: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(PERF), monster.getSkillExpertise(PERF))));
-			}
-		});
-		
-		perfExpBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1) {
-					monster.setSkillExpertise(PERF, true);
-					perfProfBox.setSelected(true);
-				}
-					
-				else
-					monster.setSkillExpertise(PERF, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				performance.setText("Performance: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(PERF), monster.getSkillExpertise(PERF))));
-			}
-		});
-		
-		//persuasion checkbox listeners
-		persProfBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1)
-					monster.setSkillProficiency(PERS, true);
-					
-				else {
-					monster.setSkillProficiency(PERS, false);
-					persExpBox.setSelected(false);
-				}
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				persuasion.setText("Persuasion: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(PERS), monster.getSkillExpertise(PERS))));
-			}
-		});
-		
-		persExpBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == 1) {
-					monster.setSkillExpertise(PERS, true);
-					persProfBox.setSelected(true);
-				}
-					
-				else
-					monster.setSkillExpertise(PERS, false);
-				
-				int scoreMod = Math.floorDiv(Integer.parseInt(score.getText()) - 10, 2);
-				persuasion.setText("Persuasion: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(PERS), monster.getSkillExpertise(PERS))));
-			}
-		});
-		
-		DeferredDocumentListener listener = new DeferredDocumentListener (new ActionListener() {
+
+		score.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int num = Integer.parseInt(score.getText());
-				monster.setAbilityScore(CHA, num);
-				int scoreMod = Math.floorDiv(num - 10, 2);
-				mod.setText("(" + signBonus(scoreMod) + ")");
-				save.setText("Saving Throws: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getAbilityProficiency(CHA), false)));
-				deception.setText("Deception: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(DEC), monster.getSkillExpertise(DEC))));
-				intimidation.setText("Intimidation: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(INT), monster.getSkillExpertise(INT))));
-				performance.setText("Performance: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(PERF), monster.getSkillExpertise(PERF))));
-				persuasion.setText("Persuasion: " + signBonus(calcBonus(scoreMod, monster.getProficiency(),
-					monster.getSkillProficienct(PERS), monster.getSkillExpertise(PERS))));
+				monster.setAbilityScore(CHA, (Integer) score.getSelectedItem());
+				updateAbilityModifier(mod, CHA);
+				updateSavingThrow(chaSave, chaSaveBox, CHA);
+				updateSkillText(deception, CHA, DEC);
+				updateSkillText(intimidation, CHA, INTIM);
+				updateSkillText(performance, CHA, PERF);
+				updateSkillText(persuasion, CHA, PERS);
 			}
 		});
-		
-		proficiency.getDocument().addDocumentListener(listener);
-		proficiency.addFocusListener(new FocusListener() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				listener.start();
-			}
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				listener.stop();
+
+		//saving throw checkbox listener
+		chaSaveBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				updateSavingThrow(chaSave, chaSaveBox, CHA);
 			}
 		});
+
+		score.setSelectedItem(monster.getAbilityScore(CHA));
+
+		decProfBox.addItemListener(new ProficiencyListener(decProfBox, decExpBox, deception, CHA, DEC));
+		decExpBox.addItemListener(new ExpertiseListener(decProfBox, decExpBox, deception, CHA, DEC));
+
+		intProfBox.addItemListener(new ProficiencyListener(intProfBox, intExpBox, intimidation, CHA, INTIM));
+		intExpBox.addItemListener(new ExpertiseListener(intProfBox, intExpBox, intimidation, CHA, INTIM));
+
+		perfProfBox.addItemListener(new ProficiencyListener(perfProfBox, perfExpBox, performance, CHA, PERF));
+		perfExpBox.addItemListener(new ExpertiseListener(perfProfBox, perfExpBox, performance, CHA, PERF));
+
+		persProfBox.addItemListener(new ProficiencyListener(persProfBox, persExpBox, persuasion, CHA, PERS));
+		persExpBox.addItemListener(new ExpertiseListener(persProfBox, persExpBox, persuasion, CHA, PERS));
 		
 		chaPanel.add(cha);
 		chaPanel.add(Box.createRigidArea(VERTICAL_GAP));
@@ -2207,8 +1229,8 @@ public class MonsterBuilder extends JSplitPane {
 		chaPanel.add(Box.createRigidArea(VERTICAL_GAP));
 		chaPanel.add(mod);
 		
-		savePanel.add(saveBox);
-		savePanel.add(save);
+		savePanel.add(chaSaveBox);
+		savePanel.add(chaSave);
 		chaPanel.add(savePanel);
 		
 		decPanel.add(decExpBox);
@@ -2331,37 +1353,54 @@ public class MonsterBuilder extends JSplitPane {
 		challengePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		challengePanel.setMaximumSize(new Dimension(INNER_WIDTH, INNER_HEIGHT));
 		JLabel challengeLabel = new JLabel("Challenge");
-		challengeLabel.setFont(new Font(challengeLabel.getFont().getName(), Font.BOLD, challengeLabel.getFont().getSize()));
-		JTextField challenge = new JTextField(monster.getChallenge());
-		challenge.setMaximumSize(new Dimension(30, INNER_HEIGHT));
-		JLabel xpLabel = new JLabel("(" + monster.getXP() + " XP)");
+
+		JComboBox cr = new JComboBox(crs);
+		cr.setMaximumSize(new Dimension(45, 20));
+		cr.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		JLabel xpLabel = new JLabel();
 		xpLabel.setFont(new Font(xpLabel.getFont().getName(), Font.ITALIC, xpLabel.getFont().getSize()));
-		
-		DeferredDocumentListener listener = new DeferredDocumentListener (new ActionListener() {
+
+		cr.addItemListener(new ItemListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				monster.setChallenge(challenge.getText());
-				xpLabel.setText("(" + monster.getXP() + " XP)");
-				proxy.updateMonster(monster); //updates xp values on server for enc builder
+			public void itemStateChanged(ItemEvent e) {
+				monster.setChallenge(cr.getSelectedItem().toString());
+				xpLabel.setText("(" + monster.getXP() + "XP)");
+				updateSavingThrow(strSave, strSaveBox, STR);
+				updateSkillText(athletics, STR, ATH);
+
+				updateSavingThrow(dexSave, dexSaveBox, DEX);
+				updateSkillText(acrobatics, DEX, ACRO);
+				updateSkillText(hand, DEX, HAND);
+				updateSkillText(stealth, DEX, STE);
+
+				updateSavingThrow(intSave, intSaveBox, INT);
+				updateSkillText(arcana, INT, ARC);
+				updateSkillText(history, INT, HIS);
+				updateSkillText(investigation, INT, INV);
+				updateSkillText(nature, INT, NAT);
+				updateSkillText(religion, INT, REL);
+
+				updateSavingThrow(wisSave, wisSaveBox, WIS);
+				updateSkillText(animal, WIS, ANI);
+				updateSkillText(insight, WIS, INS);
+				updateSkillText(medicine, WIS, MED);
+				updateSkillText(perception, WIS, PER);
+				updateSkillText(survival, WIS, SUR);
+
+				updateSavingThrow(chaSave, chaSaveBox, CHA);
+				updateSkillText(deception, CHA, DEC);
+				updateSkillText(intimidation, CHA, INTIM);
+				updateSkillText(performance, CHA, PERF);
+				updateSkillText(persuasion, CHA, PERS);
 			}
 		});
-		
-		challenge.getDocument().addDocumentListener(listener);
-		challenge.addFocusListener(new FocusListener() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				listener.start();
-			}
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				listener.stop();
-			}
-		});
+
+		cr.setSelectedItem(monster.getChallenge());
 		
 		challengePanel.add(challengeLabel);
 		challengePanel.add(Box.createRigidArea(HORIZONTAL_GAP));
-		challengePanel.add(challenge);
+		challengePanel.add(cr);
 		challengePanel.add(Box.createRigidArea(HORIZONTAL_GAP));
 		challengePanel.add(xpLabel);
 		
@@ -2375,7 +1414,9 @@ public class MonsterBuilder extends JSplitPane {
 		
 		return abilityLabel;
 	}
-	
+
+	//TODO: change name from JLabel to JTextField, eliminate rename button. Find out how to dynamically resize a JTextField as the user types
+	//TODO: apply above to action and legendary action
 	private JPanel getAbilityPanel(int i, JScrollPane scroll) {
 		final int index = i;
 		
@@ -2395,7 +1436,7 @@ public class MonsterBuilder extends JSplitPane {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String message = "Enter the new name for the ability:";
-				String name = (String) JOptionPane.showInputDialog(scroll, message, "Rename monster.Ability",
+				String name = (String) JOptionPane.showInputDialog(scroll, message, "Rename Ability",
 						JOptionPane.QUESTION_MESSAGE);
 						
 						System.out.println(name);
@@ -2415,7 +1456,7 @@ public class MonsterBuilder extends JSplitPane {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int yesNo = (int) JOptionPane.showConfirmDialog(scroll, "Are you sure you wish to delete "
-					+ abilityName.getText() + "?", "Delete monster.Ability", JOptionPane.YES_NO_OPTION,
+					+ abilityName.getText() + "?", "Delete Ability", JOptionPane.YES_NO_OPTION,
 					JOptionPane.WARNING_MESSAGE);
 				
 				if (yesNo == JOptionPane.YES_OPTION) {
@@ -2493,7 +1534,7 @@ public class MonsterBuilder extends JSplitPane {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String message = "Enter the new name for the action:";
-				String name = (String) JOptionPane.showInputDialog(scroll, message, "Rename monster.Action",
+				String name = (String) JOptionPane.showInputDialog(scroll, message, "Rename Action",
 						JOptionPane.QUESTION_MESSAGE);
 						
 				if (name == null)
@@ -2511,7 +1552,7 @@ public class MonsterBuilder extends JSplitPane {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int yesNo = (int) JOptionPane.showConfirmDialog(scroll, "Are you sure you wish to delete "
-					+ actionName.getText() + "?", "Delete monster.Action", JOptionPane.YES_NO_OPTION,
+					+ actionName.getText() + "?", "Delete Action", JOptionPane.YES_NO_OPTION,
 					JOptionPane.WARNING_MESSAGE);
 				
 				if (yesNo == JOptionPane.YES_OPTION) {
@@ -2570,13 +1611,14 @@ public class MonsterBuilder extends JSplitPane {
 		
 		return legendaryLabel;
 	}
-	
+
+	//TODO: only include this panel if the monster has legendary actions
 	private JPanel getCountPanel() {
 		JPanel countPanel = new JPanel();
 		countPanel.setLayout(new BoxLayout(countPanel, BoxLayout.X_AXIS));
 		countPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		countPanel.setMaximumSize(new Dimension(INNER_WIDTH, INNER_HEIGHT));
-		JLabel countLabel = new JLabel("Legendary monster.Action Count");
+		JLabel countLabel = new JLabel("Legendary Action Count");
 		countLabel.setFont(new Font(countLabel.getFont().getName(), Font.BOLD, countLabel.getFont().getSize()));
 		JTextField count = new JTextField(monster.getLegendaryActionCount());
 		
@@ -2627,7 +1669,7 @@ public class MonsterBuilder extends JSplitPane {
 			public void actionPerformed(ActionEvent e) {
 				String message = "Enter the new name for the legendary action:";
 				String name;
-				name = (String) JOptionPane.showInputDialog(scroll, message, "Rename Legendary monster.Action",
+				name = (String) JOptionPane.showInputDialog(scroll, message, "Rename Legendary Action",
 						JOptionPane.QUESTION_MESSAGE);
 						
 				if (name == null)
@@ -2645,7 +1687,7 @@ public class MonsterBuilder extends JSplitPane {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int yesNo = (int) JOptionPane.showConfirmDialog(scroll, "Are you sure you wish to delete "
-					+ legendaryName.getText() + "?", "Delete Legendary monster.Action", JOptionPane.YES_NO_OPTION,
+					+ legendaryName.getText() + "?", "Delete Legendary Action", JOptionPane.YES_NO_OPTION,
 					JOptionPane.WARNING_MESSAGE);
 				
 				if (yesNo == JOptionPane.YES_OPTION) {
@@ -2704,16 +1746,18 @@ public class MonsterBuilder extends JSplitPane {
 			return;
 			
 		//update current monster on server before getting new monster info
-		if (!list.isSelectionEmpty())
+		if (!monster.getName().equals("select a monster")) {
 			proxy.updateMonster(monster);
+		}
 		
 		getMonster(getLastSelected());
 	}
 	
 	//Stringify last selected value of JList
 	public String getLastSelected() {
-		if (list.isSelectionEmpty())
+		if (list.isSelectionEmpty()) {
 			return "select a monster";
+		}
 			
 		return list.getSelectedValue().toString();
 	}
@@ -2734,33 +1778,113 @@ public class MonsterBuilder extends JSplitPane {
 		 //updates current monster info, needed for restoring
 		 monster = proxy.getMonster(monster.getName());
 	 }
-	 
-	 /**
-	  * cals bonus for any skill/saving throw
-	  * expertise should always be false for saving throws
-	  */
-	 private int calcBonus(int mod, int profBonus, boolean proficient, boolean expertise) {
-		 if (proficient)
-			mod += profBonus;
-			
-		if (expertise)
-			mod += profBonus;
-			
-		return mod;
+
+	private void updateAbilityModifier(JLabel modLabel, String stat) {
+		modLabel.setText("(" + monster.getSignedAbilityModifier(stat) + ")");
 	}
-	
+
+	private void updateSavingThrow(JLabel save, JCheckBox saveCheck, String stat) {
+		monster.setAbilityProficiency(stat, saveCheck.isSelected());
+		save.setText("Saving Throws: " + monster.getSignedSavingThrow(stat));
+	}
+
+	private void updateSkillText(JLabel skillLabel, String stat, String skill) {
+		skillLabel.setText(skill + ": " + monster.getSignedSkillModifier(stat, skill));
+	}
+
+	private void updateSkillProf(JCheckBox prof, JCheckBox exp, JLabel skillLabel, String stat, String skill) {
+		monster.setSkillProficiency(skill, prof.isSelected());
+
+		if (!prof.isSelected()) {
+			exp.setSelected(false);
+			monster.setSkillExpertise(skill, false);
+		}
+
+		updateSkillText(skillLabel, stat, skill);
+	}
+
+	private void updateSkillExp(JCheckBox prof, JCheckBox exp, JLabel skillLabel, String stat, String skill) {
+		monster.setSkillExpertise(skill, exp.isSelected());
+
+		if (exp.isSelected()) {
+			prof.setSelected(true);
+			monster.setSkillProficiency(skill, true);
+		}
+
+		updateSkillText(skillLabel, stat, skill);
+	}
+
 	/**
-	 * stringifies bonus and signs it
+	 * Custom ItemListener for when a Proficiency JCheckBox is clicked
 	 */
-	private String signBonus(int mod) {
-		String signed;
-		
-		if (mod < 0)
-			signed = Integer.toString(mod);
-			
-		else
-			signed = "+" + Integer.toString(mod);
-			
-		return signed;
+	private class ProficiencyListener implements ItemListener {
+		private final JCheckBox prof, exp;
+		JLabel skillLabel;
+		private final String stat, skill;
+
+		/**
+		 * Constructor that sets up the values used by the listener
+		 * @param prof Proficiency JCheckBox
+		 * @param exp Expertise JCheckBox
+		 * @param skillLabel JLabel for the skill
+		 * @param stat Stat string
+		 * @param skill Skill string
+		 */
+		ProficiencyListener(JCheckBox prof, JCheckBox exp, JLabel skillLabel, String stat, String skill) {
+			this.prof = prof;
+			this.exp = exp;
+			this.skillLabel = skillLabel;
+			this.stat = stat;
+			this.skill = skill;
+		}
+
+		/**
+		 * Invoked when an item has been selected or deselected by the user.
+		 * The code written for this method performs the operations
+		 * that need to occur when an item is selected (or deselected).
+		 *
+		 * @param e the event to be processed
+		 */
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			updateSkillProf(prof, exp, skillLabel, stat, skill);
+		}
+	}
+
+	/**
+	 * Custom ItemListener for when a Expertise JCheckBox is clicked
+	 */
+	private class ExpertiseListener implements ItemListener {
+		private final JCheckBox prof, exp;
+		JLabel skillLabel;
+		private final String stat, skill;
+
+		/**
+		 * Constructor that sets up the values used by the listener
+		 * @param prof Proficiency JCheckBox
+		 * @param exp Expertise JCheckBox
+		 * @param skillLabel JLabel for the skill
+		 * @param stat Stat string
+		 * @param skill Skill string
+		 */
+		ExpertiseListener(JCheckBox prof, JCheckBox exp, JLabel skillLabel, String stat, String skill) {
+			this.prof = prof;
+			this.exp = exp;
+			this.skillLabel = skillLabel;
+			this.stat = stat;
+			this.skill = skill;
+		}
+
+		/**
+		 * Invoked when an item has been selected or deselected by the user.
+		 * The code written for this method performs the operations
+		 * that need to occur when an item is selected (or deselected).
+		 *
+		 * @param e the event to be processed
+		 */
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			updateSkillExp(prof, exp, skillLabel, stat, skill);
+		}
 	}
 }

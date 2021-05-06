@@ -1,12 +1,12 @@
 package encounter;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 
-import org.json.JSONObject;
-import org.json.JSONArray;
-import org.json.JSONTokener;
-import player.PlayerData;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 public class Encounter {
 	private String name;
@@ -30,31 +30,49 @@ public class Encounter {
 		playerData = new ArrayList<PlayerData>();
 		monsterData = new ArrayList<MonsterData>();
 		xpTotal = 0;
+
+		FileReader reader = null;
 		
 		try {
-			InputStream in = this.getClass().getClassLoader().getResourceAsStream("EmptyData/NewEncounter.json");
+			reader = new FileReader("EmptyData/NewEncounter.json", Charset.forName("UTF-8"));
 
-			if (in == null)
-            		in = new FileInputStream(new File("EmptyData/NewEncounter.json"));
-            		
-			JSONObject json = new JSONObject(new JSONTokener(in));
+			JSONParser parser = new JSONParser();
+			JSONObject json = (JSONObject) parser.parse(reader);
+
 			initFromJson(json);
 		} catch (Exception e) {
 			System.out.println("Error in Encounter(): " + e.getMessage());
+		} finally {
+			try {
+				if (reader != null) {
+					reader.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
 	public Encounter(String name) {
-		try {
-			InputStream in = this.getClass().getClassLoader().getResourceAsStream("Encounters/" + name + ".json");
+		FileReader reader = null;
 
-			if (in == null)
-            		in = new FileInputStream(new File("Encounters/" + name + ".json"));
-            		
-			JSONObject json = new JSONObject(new JSONTokener(in));
+		try {
+			reader = new FileReader("Encounters/" + name + ".json", Charset.forName("UTF-8"));
+
+			JSONParser parser = new JSONParser();
+			JSONObject json = (JSONObject) parser.parse(reader);
+
 			initFromJson(json);
 		} catch (Exception e) {
 			System.out.println("Error in Encounter(String name): " + e.getMessage());
+		} finally {
+			try {
+				if (reader != null) {
+					reader.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -67,18 +85,18 @@ public class Encounter {
 		monsterData = new ArrayList<MonsterData>();
 		
 		try {
-			name = json.getString("name");
-			theme = json.getString("theme");
-			lairAction = json.getBoolean("lairAction");
-			JSONArray arr = json.getJSONArray("playerData");
+			name = (String) json.get("name");
+			theme = (String) json.get("theme");
+			lairAction = (boolean) json.get("lairAction");
+			JSONArray arr = (JSONArray) json.get("playerData");
 			
-			for (int i = 0; i < arr.length(); i++)
-				playerData.add(new PlayerData(arr.getJSONObject(i)));
+			for (int i = 0; i < arr.size(); i++)
+				playerData.add(new PlayerData((JSONObject) arr.get(i)));
 
-			arr = json.getJSONArray("monsterData");
+			arr = (JSONArray) json.get("monsterData");
 			
-			for (int i = 0; i < arr.length(); i++)
-				monsterData.add(new MonsterData(arr.getJSONObject(i)));
+			for (int i = 0; i < arr.size(); i++)
+				monsterData.add(new MonsterData((JSONObject) arr.get(i)));
 		} catch (Exception e) {
 			System.out.println("Error in Encounter.initFromJson(JSONObject): " + e.getMessage());
 			e.printStackTrace();
@@ -143,15 +161,6 @@ public class Encounter {
 		
 		else
 			monsterData.get(index).setQuantity(quantity);
-	}
-	
-	//TODO: may not be needed
-	public boolean containsMonster(String name) {
-		for (MonsterData i : monsterData)
-			if (i.getMonster().equals(name))
-				return true;
-				
-		return false;
 	}
 	
 	/**
@@ -312,7 +321,7 @@ public class Encounter {
 		String result = "{}";
 		
 		try {
-			result = toJson().toString(4);
+			result = toJson().toString();
 		} catch (Exception e) {
 			System.out.println("Error in Encounter.toJsonString: " + e.getMessage());
 		}
@@ -331,12 +340,12 @@ public class Encounter {
 			obj.put("lairAction", lairAction);
 			
 			for (PlayerData i : playerData)
-				dataArr.put(i.toJson());
+				dataArr.add(i.toJson());
 			
 			obj.put("playerData", dataArr);
 			
 			for (MonsterData i : monsterData)
-				monArr.put(i.toJson());
+				monArr.add(i.toJson());
 			
 			obj.put("monsterData", monArr);
 		}catch (Exception e) {
@@ -366,6 +375,6 @@ public class Encounter {
 			System.out.println("Error in Encounter.saveJson: " + e.getMessage());
 		}
 		
-		return true;
+		return result;
 	}
 }
