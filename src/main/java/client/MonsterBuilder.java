@@ -163,8 +163,6 @@ public class MonsterBuilder extends JSplitPane {
 		panel.add(getNameLabel());
 		panel.add(Box.createRigidArea(VERTICAL_GAP));
 
-		//TODO: add display name panel
-		
 		if (monster.getName().equals("select a monster")) {
 			scroll.setViewportView(panel);
 			return scroll;
