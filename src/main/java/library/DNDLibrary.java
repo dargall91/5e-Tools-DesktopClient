@@ -27,6 +27,6 @@ public interface DNDLibrary {
 	public ArrayList<String> getPlayerCharacterList();
 	public boolean saveMonster(String name);
 	public boolean saveEncounter(String name);
-	public boolean savePlayerCharacters();
+	//public boolean savePlayerCharacters();
 	public boolean saveAll();
 }

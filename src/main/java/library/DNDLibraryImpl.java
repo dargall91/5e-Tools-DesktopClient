@@ -365,7 +365,7 @@ public class DNDLibraryImpl implements DNDLibrary {
 	}
 	
 	//TODO: potentially private method, if change to private do not forget to remove from DNDLibrary.java and DNDClientProxy.java
-	public boolean savePlayerCharacters() {
+	private boolean savePlayerCharacters() {
 		boolean result = false;
 		
 		try {
