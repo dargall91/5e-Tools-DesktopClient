@@ -169,6 +169,9 @@ public class MonsterBuilder extends JSplitPane {
 			scroll.setViewportView(panel);
 			return scroll;
 		}
+
+		panel.add(getDisplayName());
+		panel.add(Box.createRigidArea(VERTICAL_GAP));
 		
 		//size
 		panel.add(getSizePanel());
@@ -293,6 +296,43 @@ public class MonsterBuilder extends JSplitPane {
 		name.setAlignmentX(Component.LEFT_ALIGNMENT);
 		
 		return name;
+	}
+
+	//size
+	private JPanel getDisplayName() {
+		JPanel displayName = new JPanel();
+		displayName.setLayout(new BoxLayout(displayName, BoxLayout.X_AXIS));
+		displayName.setAlignmentX(Component.LEFT_ALIGNMENT);
+		displayName.setMaximumSize(new Dimension(INNER_WIDTH, INNER_HEIGHT));
+		JLabel nameLabel = new JLabel("Display Name:");
+		nameLabel.setFont(new Font(nameLabel.getFont().getName(), Font.BOLD, nameLabel.getFont().getSize()));
+		JTextField name = new JTextField(monster.getDisplayName());
+
+		DeferredDocumentListener listener = new DeferredDocumentListener (new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				monster.setDisplayName(name.getText());
+			}
+		});
+
+		name.getDocument().addDocumentListener(listener);
+		name.addFocusListener(new FocusListener() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				listener.start();
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				listener.stop();
+			}
+		});
+
+		displayName.add(nameLabel);
+		displayName.add(Box.createRigidArea(HORIZONTAL_GAP));
+		displayName.add(name);
+
+		return displayName;
 	}
 	
 	//size
