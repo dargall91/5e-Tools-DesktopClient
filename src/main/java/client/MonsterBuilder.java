@@ -30,6 +30,7 @@ public class MonsterBuilder extends JSplitPane {
 			13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
 	private final String[] crs = { "-1", "0", "1/8", "1/4", "1/2", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
 			"13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30" };
+	private final Integer[] legendaryCounts = { 0, 1, 2, 3, 4, 5};
 	private final String STR = "STR";
 	private final String ATH = "Athletics";
 	private final String DEX = "DEX";
@@ -261,10 +262,13 @@ public class MonsterBuilder extends JSplitPane {
 		//Legendary Actions
 		panel.add(getLegendaryLabel());
 		panel.add(Box.createRigidArea(VERTICAL_GAP));
-		panel.add(getCountPanel());
-		panel.add(Box.createRigidArea(VERTICAL_GAP));
-		
+
 		legendaryList = monster.getLegendaryActions();
+
+		if (legendaryList.size() > 0) {
+			panel.add(getCountPanel());
+			panel.add(Box.createRigidArea(VERTICAL_GAP));
+		}
 		
 		for (int i = 0; i < legendaryList.size(); i++) {
 			panel.add(getLegendaryPanel(i, scroll));
@@ -1477,8 +1481,6 @@ public class MonsterBuilder extends JSplitPane {
 				String name = (String) JOptionPane.showInputDialog(scroll, message, "Rename Ability",
 						JOptionPane.QUESTION_MESSAGE);
 						
-						System.out.println(name);
-						
 				if (name == null || name.equals(""))
 					return;
 				
@@ -1650,7 +1652,6 @@ public class MonsterBuilder extends JSplitPane {
 		return legendaryLabel;
 	}
 
-	//TODO: only include this panel if the monster has legendary actions
 	private JPanel getCountPanel() {
 		JPanel countPanel = new JPanel();
 		countPanel.setLayout(new BoxLayout(countPanel, BoxLayout.X_AXIS));
@@ -1658,25 +1659,16 @@ public class MonsterBuilder extends JSplitPane {
 		countPanel.setMaximumSize(new Dimension(INNER_WIDTH, INNER_HEIGHT));
 		JLabel countLabel = new JLabel("Legendary Action Count");
 		countLabel.setFont(new Font(countLabel.getFont().getName(), Font.BOLD, countLabel.getFont().getSize()));
-		JTextField count = new JTextField(monster.getLegendaryActionCount());
-		
-		DeferredDocumentListener listener = new DeferredDocumentListener (new ActionListener() {
+
+		JComboBox count = new JComboBox(legendaryCounts);
+		count.setMaximumSize(new Dimension(45, 20));
+		count.setAlignmentX(Component.CENTER_ALIGNMENT);
+		count.setSelectedItem(monster.getLegendaryActionCount());
+
+		count.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				monster.setLegendaryActionCount(Integer.parseInt(count.getText()));
-			}
-		});
-		
-		count.getDocument().addDocumentListener(listener);
-		count.addFocusListener(new FocusListener() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				listener.start();
-			}
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				listener.stop();
+				monster.setLegendaryActionCount((Integer) count.getSelectedItem());
 			}
 		});
 		
