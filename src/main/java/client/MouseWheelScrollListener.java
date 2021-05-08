@@ -15,11 +15,11 @@ import javax.swing.SwingUtilities;
  * This behavior is a little better than Swing's default behavior but
  * still worse than the behavior of Google Chrome, which remembers the
  * currently scrolling component and sticks to it until a timeout happens.
+ * </p>
  *
  * @see <a href="https://stackoverflow.com/a/53687022">Stack Overflow</a>
  */
 public final class MouseWheelScrollListener implements MouseWheelListener {
-
     private final JScrollPane pane;
     private int previousValue;
 
@@ -28,6 +28,11 @@ public final class MouseWheelScrollListener implements MouseWheelListener {
         previousValue = pane.getVerticalScrollBar().getValue();
     }
 
+    /**
+     * Defines how to scroll through the JScrollBar.
+     *
+     * @param e Mouse Wheel Event
+     */
     public void mouseWheelMoved(MouseWheelEvent e) {
         Component parent = pane.getParent();
         while (!(parent instanceof JScrollPane)) {
