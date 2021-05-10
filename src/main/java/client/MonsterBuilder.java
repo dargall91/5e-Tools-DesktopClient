@@ -1437,8 +1437,7 @@ public class MonsterBuilder extends JSplitPane {
         innerPanel.setMaximumSize(new Dimension(150, Integer.MAX_VALUE));
 
         JTextArea abilityName = new JTextArea(abilityList.get(i).getName());
-        //TODO: adjust border for ability, action, and legendary actions (names and descriptions)
-        abilityName.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        abilityName.setBorder(new JTextField().getBorder());
         abilityName.setLineWrap(true);
         abilityName.setWrapStyleWord(true);
         abilityName.setAlignmentX(Box.LEFT_ALIGNMENT);
@@ -1494,6 +1493,7 @@ public class MonsterBuilder extends JSplitPane {
         JTextArea abilityDesc = new JTextArea(abilityList.get(i).getDescription());
         abilityDesc.setLineWrap(true);
         abilityDesc.setWrapStyleWord(true);
+        abilityDesc.setBorder(new JTextField().getBorder());
 
         DeferredDocumentListener descListener = new DeferredDocumentListener (new ActionListener() {
             @Override
@@ -1573,7 +1573,7 @@ public class MonsterBuilder extends JSplitPane {
         innerPanel.setMaximumSize(new Dimension(150, Integer.MAX_VALUE));
 
         JTextArea actionName = new JTextArea(actionList.get(i).getName());
-        actionName.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        actionName.setBorder(new JTextField().getBorder());
         actionName.setLineWrap(true);
         actionName.setWrapStyleWord(true);
         actionName.setAlignmentX(Box.LEFT_ALIGNMENT);
@@ -1630,6 +1630,7 @@ public class MonsterBuilder extends JSplitPane {
         actionDesc.setAlignmentY(Box.CENTER_ALIGNMENT);
         actionDesc.setLineWrap(true);
         actionDesc.setWrapStyleWord(true);
+        actionDesc.setBorder(new JTextField().getBorder());
 
         DeferredDocumentListener descListener = new DeferredDocumentListener (new ActionListener() {
             @Override
@@ -1747,7 +1748,7 @@ public class MonsterBuilder extends JSplitPane {
         innerPanel.setMaximumSize(new Dimension(150, Integer.MAX_VALUE));
 
         JTextArea legendaryName = new JTextArea(legendaryList.get(i).getName());
-        legendaryName.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        legendaryName.setBorder(new JTextField().getBorder());
         legendaryName.setLineWrap(true);
         legendaryName.setWrapStyleWord(true);
         legendaryName.setAlignmentX(Box.LEFT_ALIGNMENT);
@@ -1807,8 +1808,7 @@ public class MonsterBuilder extends JSplitPane {
         legendaryDesc.setAlignmentY(Box.CENTER_ALIGNMENT);
         legendaryDesc.setLineWrap(true);
         legendaryDesc.setWrapStyleWord(true);
-        JScrollPane scrollDesc = new JScrollPane(legendaryDesc);
-        scrollDesc.addMouseWheelListener(new MouseWheelScrollListener(scrollDesc));
+        legendaryDesc.setBorder(new JTextField().getBorder());
 
         DeferredDocumentListener descListener = new DeferredDocumentListener (new ActionListener() {
             @Override
@@ -1832,7 +1832,7 @@ public class MonsterBuilder extends JSplitPane {
 
         legendaryPanel.add(innerPanel);
         legendaryPanel.add(Box.createRigidArea(HORIZONTAL_GAP));
-        legendaryPanel.add(scrollDesc);
+        legendaryPanel.add(legendaryDesc);
 
         return legendaryPanel;
     }
