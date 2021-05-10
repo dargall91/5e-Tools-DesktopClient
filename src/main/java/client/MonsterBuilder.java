@@ -213,78 +213,15 @@ public class MonsterBuilder extends JSplitPane {
         panel.add(Box.createRigidArea(VERTICAL_GAP));
 
         //Abilities
-        panel.add(getAbilityLabel());
-        panel.add(Box.createRigidArea(VERTICAL_GAP));
-
-        abilityList = monster.getAbilities();
-
-        for (int i = 0; i < abilityList.size(); i++) {
-            panel.add(getAbilityPanel(i, scroll));
-            panel.add(Box.createRigidArea(VERTICAL_GAP));
-        }
-
-        JButton addAbility = new JButton("Add Ability");
-        addAbility.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                monster.addAbility(new Ability());
-                revalidate();
-                repaint();
-            }
-        });
-
-        panel.add(addAbility);
+        panel.add(getAbilityPanel());
         panel.add(Box.createRigidArea(VERTICAL_GAP));
 
         //Actions
-        panel.add(getActionLabel());
-        panel.add(Box.createRigidArea(VERTICAL_GAP));
-
-        actionList = monster.getActions();
-
-        for (int i = 0; i < actionList.size(); i++) {
-            panel.add(getActionPanel(i, scroll));
-            panel.add(Box.createRigidArea(VERTICAL_GAP));
-        }
-
-        JButton addAction = new JButton("Add Action");
-        addAction.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                monster.addAction(new Action());
-                refreshRight();
-            }
-        });
-
-        panel.add(addAction);
+        panel.add(getActionPanel());
         panel.add(Box.createRigidArea(VERTICAL_GAP));
 
         //Legendary Actions
-        panel.add(getLegendaryLabel());
-        panel.add(Box.createRigidArea(VERTICAL_GAP));
-
-        legendaryList = monster.getLegendaryActions();
-
-        if (legendaryList.size() > 0) {
-            panel.add(getCountPanel());
-            panel.add(Box.createRigidArea(VERTICAL_GAP));
-        }
-
-        for (int i = 0; i < legendaryList.size(); i++) {
-            panel.add(getLegendaryPanel(i, scroll));
-            panel.add(Box.createRigidArea(VERTICAL_GAP));
-        }
-
-        JButton addLegendary = new JButton("Add Legendary Action");
-        addLegendary.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                monster.addLegendaryAction(new LegendaryAction());
-                refreshRight();
-            }
-        });
-
-        panel.add(addLegendary);
+        panel.add(getLegendaryPanel());
         panel.add(Box.createRigidArea(VERTICAL_GAP));
 
         scroll.setViewportView(panel);
@@ -1449,207 +1386,324 @@ public class MonsterBuilder extends JSplitPane {
         return challengePanel;
     }
 
-    private JLabel getAbilityLabel() {
+    private JPanel getAbilityPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
         JLabel abilityLabel = new JLabel("Abilities");
         abilityLabel.setFont(new Font(abilityLabel.getFont().getName(), Font.BOLD, 15));
         abilityLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        return abilityLabel;
+        panel.add(abilityLabel);
+
+        abilityList = monster.getAbilities();
+
+        for (int i = 0; i < abilityList.size(); i++) {
+            panel.add(getAbility(i, panel));
+            panel.add(Box.createRigidArea(VERTICAL_GAP));
+        }
+
+        JButton addAbility = new JButton("Add Ability");
+        addAbility.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                monster.addAbility(new Ability());
+                abilityList = monster.getAbilities();
+                panel.remove(panel.getComponentCount() - 1);
+                panel.add(getAbility(abilityList.size() - 1, panel));
+                panel.add(addAbility);
+                panel.revalidate();
+                panel.repaint();
+            }
+        });
+
+        panel.add(addAbility);
+        panel.add(Box.createRigidArea(VERTICAL_GAP));
+
+        return panel;
     }
 
-    //TODO: change name from JLabel to JTextField, eliminate rename button. Find out how to dynamically resize a JTextField as the user types
-    //TODO: apply above to action and legendary action
-    private JPanel getAbilityPanel(int i, JScrollPane scroll) {
+    private JPanel getAbility(int i, JPanel parent) {
         final int index = i;
 
         JPanel abilityPanel = new JPanel();
         abilityPanel.setLayout(new BoxLayout(abilityPanel, BoxLayout.X_AXIS));
         abilityPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        abilityPanel.setMaximumSize(new Dimension(INNER_WIDTH, 65));
+
         JPanel innerPanel = new JPanel();
         innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
-        JLabel abilityName = new JLabel(abilityList.get(i).getName());
-        abilityName.setFont(new Font(abilityName.getFont().getName(), Font.BOLD, abilityName.getFont().getSize()));
+        innerPanel.setAlignmentX(Box.LEFT_ALIGNMENT);
+        innerPanel.setMaximumSize(new Dimension(150, Integer.MAX_VALUE));
 
-        JButton renameAbility = new JButton("Rename");
-        renameAbility.setMinimumSize(new Dimension(100, 25));
-        renameAbility.setMaximumSize(new Dimension(100, 25));
-        renameAbility.addActionListener(new ActionListener() {
+        JTextArea abilityName = new JTextArea(abilityList.get(i).getName());
+        //TODO: adjust border for ability, action, and legendary actions (names and descriptions)
+        abilityName.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        abilityName.setLineWrap(true);
+        abilityName.setWrapStyleWord(true);
+        abilityName.setAlignmentX(Box.LEFT_ALIGNMENT);
+        abilityName.setAlignmentY(Box.TOP_ALIGNMENT);
+
+        DeferredDocumentListener nameListener = new DeferredDocumentListener (new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String message = "Enter the new name for the ability:";
-                String name = (String) JOptionPane.showInputDialog(scroll, message, "Rename Ability",
-                        JOptionPane.QUESTION_MESSAGE);
+                monster.renameAbility(abilityName.getText(), i);
+            }
+        });
 
-                if (name == null || name.equals(""))
-                    return;
+        abilityName.getDocument().addDocumentListener(nameListener);
+        abilityName.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                nameListener.start();
+            }
 
-                monster.renameAbility(name, index);
-                refreshRight();
+            @Override
+            public void focusLost(FocusEvent e) {
+                nameListener.stop();
             }
         });
 
         JButton deleteAbility = new JButton("Delete");
         deleteAbility.setMinimumSize(new Dimension(100, 25));
         deleteAbility.setMaximumSize(new Dimension(100, 25));
+        deleteAbility.setAlignmentX(Box.LEFT_ALIGNMENT);
+        deleteAbility.setAlignmentY(Box.TOP_ALIGNMENT);
         deleteAbility.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int yesNo = (int) JOptionPane.showConfirmDialog(scroll, "Are you sure you wish to delete "
+                int yesNo = JOptionPane.showConfirmDialog(MonsterBuilder.this, "Are you sure you wish to delete "
                     + abilityName.getText() + "?", "Delete Ability", JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE);
 
                 if (yesNo == JOptionPane.YES_OPTION) {
                     monster.deleteAbility(index);
-                    refreshRight();
+                    abilityList = monster.getAbilities();
+                    parent.remove(abilityPanel);
+                    parent.revalidate();
+                    parent.repaint();
                 }
             }
         });
 
         innerPanel.setAlignmentY(Box.CENTER_ALIGNMENT);
         innerPanel.add(abilityName);
-        innerPanel.add(Box.createRigidArea(HORIZONTAL_GAP));
-        innerPanel.add(renameAbility);
-        innerPanel.add(Box.createRigidArea(HORIZONTAL_GAP));
+        innerPanel.add(Box.createRigidArea(VERTICAL_GAP));
         innerPanel.add(deleteAbility);
-        innerPanel.add(Box.createRigidArea(HORIZONTAL_GAP));
+
         JTextArea abilityDesc = new JTextArea(abilityList.get(i).getDescription());
-        abilityDesc.setAlignmentY(Box.CENTER_ALIGNMENT);
         abilityDesc.setLineWrap(true);
         abilityDesc.setWrapStyleWord(true);
-        JScrollPane scrollDesc = new JScrollPane(abilityDesc);
-        scrollDesc.addMouseWheelListener(new MouseWheelScrollListener(scrollDesc));
 
-        DeferredDocumentListener listener = new DeferredDocumentListener (new ActionListener() {
+        DeferredDocumentListener descListener = new DeferredDocumentListener (new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 monster.setAbilityDescription(abilityDesc.getText(), i);
             }
         });
 
-        abilityDesc.getDocument().addDocumentListener(listener);
+        abilityDesc.getDocument().addDocumentListener(descListener);
         abilityDesc.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                listener.start();
+                descListener.start();
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                listener.stop();
+                descListener.stop();
             }
         });
 
         abilityPanel.add(innerPanel);
         abilityPanel.add(Box.createRigidArea(HORIZONTAL_GAP));
-        abilityPanel.add(scrollDesc);
+        abilityPanel.add(abilityDesc);
 
         return abilityPanel;
     }
 
-    private JLabel getActionLabel() {
+    private JPanel getActionPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
         JLabel actionLabel = new JLabel("Actions");
         actionLabel.setFont(new Font(actionLabel.getFont().getName(), Font.BOLD, 15));
         actionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        return actionLabel;
+        panel.add(actionLabel);
+
+        actionList = monster.getActions();
+
+        for (int i = 0; i < actionList.size(); i++) {
+            panel.add(getAction(i, panel));
+            panel.add(Box.createRigidArea(VERTICAL_GAP));
+        }
+
+        JButton addAction = new JButton("Add Action");
+        addAction.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                monster.addAction(new Action());
+                actionList = monster.getActions();
+                panel.remove(panel.getComponentCount() - 1);
+                panel.add(getAction(actionList.size() - 1, panel));
+                panel.add(addAction);
+                panel.revalidate();
+                panel.repaint();
+            }
+        });
+
+        panel.add(addAction);
+        panel.add(Box.createRigidArea(VERTICAL_GAP));
+
+        return panel;
     }
 
-    private JPanel getActionPanel(int i, JScrollPane scroll) {
+    private JPanel getAction(int i, JPanel parent) {
         final int index = i;
 
         JPanel actionPanel = new JPanel();
         actionPanel.setLayout(new BoxLayout(actionPanel, BoxLayout.X_AXIS));
         actionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        actionPanel.setMaximumSize(new Dimension(INNER_WIDTH, 65));
+
         JPanel innerPanel = new JPanel();
         innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
-        JLabel actionName = new JLabel(actionList.get(i).getName());
-        actionName.setFont(new Font(actionName.getFont().getName(), Font.BOLD, actionName.getFont().getSize()));
+        innerPanel.setAlignmentX(Box.LEFT_ALIGNMENT);
+        innerPanel.setMaximumSize(new Dimension(150, Integer.MAX_VALUE));
 
-        JButton renameAction = new JButton("Rename");
-        renameAction.setMinimumSize(new Dimension(100, 25));
-        renameAction.setMaximumSize(new Dimension(100, 25));
-        renameAction.addActionListener(new ActionListener() {
+        JTextArea actionName = new JTextArea(actionList.get(i).getName());
+        actionName.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        actionName.setLineWrap(true);
+        actionName.setWrapStyleWord(true);
+        actionName.setAlignmentX(Box.LEFT_ALIGNMENT);
+        actionName.setAlignmentY(Box.TOP_ALIGNMENT);
+
+        DeferredDocumentListener nameListener = new DeferredDocumentListener (new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String message = "Enter the new name for the action:";
-                String name = (String) JOptionPane.showInputDialog(scroll, message, "Rename Action",
-                        JOptionPane.QUESTION_MESSAGE);
+                monster.renameAction(actionName.getText(), i);
+            }
+        });
 
-                if (name == null)
-                    return;
+        actionName.getDocument().addDocumentListener(nameListener);
+        actionName.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                nameListener.start();
+            }
 
-                monster.renameAction(name, index);
-                refreshRight();
+            @Override
+            public void focusLost(FocusEvent e) {
+                nameListener.stop();
             }
         });
 
         JButton deleteAction = new JButton("Delete");
         deleteAction.setMinimumSize(new Dimension(100, 25));
         deleteAction.setMaximumSize(new Dimension(100, 25));
+        deleteAction.setAlignmentX(Box.LEFT_ALIGNMENT);
+        deleteAction.setAlignmentY(Box.TOP_ALIGNMENT);
         deleteAction.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int yesNo = (int) JOptionPane.showConfirmDialog(scroll, "Are you sure you wish to delete "
+                int yesNo = JOptionPane.showConfirmDialog(MonsterBuilder.this, "Are you sure you wish to delete "
                     + actionName.getText() + "?", "Delete Action", JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE);
 
                 if (yesNo == JOptionPane.YES_OPTION) {
                     monster.deleteAction(index);
-                    refreshRight();
+                    actionList = monster.getActions();
+                    parent.remove(actionPanel);
+                    parent.revalidate();
+                    parent.repaint();
                 }
             }
         });
 
         innerPanel.setAlignmentY(Box.CENTER_ALIGNMENT);
         innerPanel.add(actionName);
-        innerPanel.add(Box.createRigidArea(HORIZONTAL_GAP));
-        innerPanel.add(renameAction);
-        innerPanel.add(Box.createRigidArea(HORIZONTAL_GAP));
+        innerPanel.add(Box.createRigidArea(VERTICAL_GAP));
         innerPanel.add(deleteAction);
-        innerPanel.add(Box.createRigidArea(HORIZONTAL_GAP));
 
         JTextArea actionDesc = new JTextArea(actionList.get(i).getDescription());
         actionDesc.setAlignmentY(Box.CENTER_ALIGNMENT);
         actionDesc.setLineWrap(true);
         actionDesc.setWrapStyleWord(true);
-        JScrollPane scrollDesc = new JScrollPane(actionDesc);
-        scrollDesc.addMouseWheelListener(new MouseWheelScrollListener(scrollDesc));
 
-        DeferredDocumentListener listener = new DeferredDocumentListener (new ActionListener() {
+        DeferredDocumentListener descListener = new DeferredDocumentListener (new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 monster.setActionDescription(actionDesc.getText(), i);
             }
         });
 
-        actionDesc.getDocument().addDocumentListener(listener);
+        actionDesc.getDocument().addDocumentListener(descListener);
         actionDesc.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                listener.start();
+                descListener.start();
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                listener.stop();
+                descListener.stop();
             }
         });
 
         actionPanel.add(innerPanel);
         actionPanel.add(Box.createRigidArea(HORIZONTAL_GAP));
-        actionPanel.add(scrollDesc);
+        actionPanel.add(actionDesc);
 
         return actionPanel;
     }
 
-    private JLabel getLegendaryLabel() {
+    private JPanel getLegendaryPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
         JLabel legendaryLabel = new JLabel("Legendary Actions");
         legendaryLabel.setFont(new Font(legendaryLabel.getFont().getName(), Font.BOLD, 15));
         legendaryLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        return legendaryLabel;
+        panel.add(legendaryLabel);
+
+        legendaryList = monster.getLegendaryActions();
+
+        if (legendaryList.size() > 0) {
+            panel.add(getCountPanel());
+            panel.add(Box.createRigidArea(VERTICAL_GAP));
+        }
+
+        for (int i = 0; i < legendaryList.size(); i++) {
+            panel.add(getLegendary(i, panel));
+            panel.add(Box.createRigidArea(VERTICAL_GAP));
+        }
+
+        JButton addLegendary = new JButton("Add Legendary Action");
+        addLegendary.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                monster.addLegendaryAction(new LegendaryAction());
+                legendaryList = monster.getLegendaryActions();
+                panel.remove(panel.getComponentCount() - 1);
+
+                if (legendaryList.size() == 1) {
+                    panel.add(getCountPanel());
+                }
+
+                panel.add(getLegendary(legendaryList.size() - 1, panel));
+                panel.add(addLegendary);
+                panel.revalidate();
+                panel.repaint();
+            }
+        });
+
+        panel.add(addLegendary);
+        panel.add(Box.createRigidArea(VERTICAL_GAP));
+
+        return panel;
     }
 
     private JPanel getCountPanel() {
@@ -1679,34 +1733,43 @@ public class MonsterBuilder extends JSplitPane {
         return countPanel;
     }
 
-    private JPanel getLegendaryPanel(int i, JScrollPane scroll) {
+    private JPanel getLegendary(int i, JPanel parent) {
+        final int index = i;
+
         JPanel legendaryPanel = new JPanel();
         legendaryPanel.setLayout(new BoxLayout(legendaryPanel, BoxLayout.X_AXIS));
         legendaryPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         legendaryPanel.setMaximumSize(new Dimension(INNER_WIDTH, 65));
+
         JPanel innerPanel = new JPanel();
         innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
-        JLabel legendaryName = new JLabel(legendaryList.get(i).getName());
-        legendaryName.setFont(new Font(legendaryName.getFont().getName(), Font.BOLD, legendaryName.getFont().getSize()));
+        innerPanel.setAlignmentX(Box.LEFT_ALIGNMENT);
+        innerPanel.setMaximumSize(new Dimension(150, Integer.MAX_VALUE));
 
-        final int index = i;
+        JTextArea legendaryName = new JTextArea(legendaryList.get(i).getName());
+        legendaryName.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        legendaryName.setLineWrap(true);
+        legendaryName.setWrapStyleWord(true);
+        legendaryName.setAlignmentX(Box.LEFT_ALIGNMENT);
+        legendaryName.setAlignmentY(Box.TOP_ALIGNMENT);
 
-        JButton renameLegendary = new JButton("Rename");
-        renameLegendary.setMinimumSize(new Dimension(100, 25));
-        renameLegendary.setMaximumSize(new Dimension(100, 25));
-        renameLegendary.addActionListener(new ActionListener() {
+        DeferredDocumentListener nameListener = new DeferredDocumentListener (new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String message = "Enter the new name for the legendary action:";
-                String name;
-                name = (String) JOptionPane.showInputDialog(scroll, message, "Rename Legendary Action",
-                        JOptionPane.QUESTION_MESSAGE);
+                monster.renameLegendaryAction(legendaryName.getText(), i);
+            }
+        });
 
-                if (name == null)
-                    return;
+        legendaryName.getDocument().addDocumentListener(nameListener);
+        legendaryName.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                nameListener.start();
+            }
 
-                monster.renameLegendaryAction(name, index);
-                refreshRight();
+            @Override
+            public void focusLost(FocusEvent e) {
+                nameListener.stop();
             }
         });
 
@@ -1716,24 +1779,30 @@ public class MonsterBuilder extends JSplitPane {
         deleteLegendary.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int yesNo = (int) JOptionPane.showConfirmDialog(scroll, "Are you sure you wish to delete "
+                int yesNo = JOptionPane.showConfirmDialog(MonsterBuilder.this, "Are you sure you wish to delete "
                     + legendaryName.getText() + "?", "Delete Legendary Action", JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE);
 
                 if (yesNo == JOptionPane.YES_OPTION) {
                     monster.deleteLegendaryAction(index);
-                    refreshRight();
+                    legendaryList = monster.getLegendaryActions();
+                    parent.remove(legendaryPanel);
+
+                    if (legendaryList.size() == 0) {
+                        parent.remove(1);
+                    }
+
+                    parent.revalidate();
+                    parent.repaint();
                 }
             }
         });
 
         innerPanel.setAlignmentY(Box.CENTER_ALIGNMENT);
         innerPanel.add(legendaryName);
-        innerPanel.add(Box.createRigidArea(HORIZONTAL_GAP));
-        innerPanel.add(renameLegendary);
-        innerPanel.add(Box.createRigidArea(HORIZONTAL_GAP));
+        innerPanel.add(Box.createRigidArea(VERTICAL_GAP));
         innerPanel.add(deleteLegendary);
-        innerPanel.add(Box.createRigidArea(HORIZONTAL_GAP));
+
         JTextArea legendaryDesc = new JTextArea(legendaryList.get(i).getDescription());
         legendaryDesc.setAlignmentY(Box.CENTER_ALIGNMENT);
         legendaryDesc.setLineWrap(true);
@@ -1741,23 +1810,23 @@ public class MonsterBuilder extends JSplitPane {
         JScrollPane scrollDesc = new JScrollPane(legendaryDesc);
         scrollDesc.addMouseWheelListener(new MouseWheelScrollListener(scrollDesc));
 
-        DeferredDocumentListener listener = new DeferredDocumentListener (new ActionListener() {
+        DeferredDocumentListener descListener = new DeferredDocumentListener (new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 monster.setLegendaryDescription(legendaryDesc.getText(), i);
             }
         });
 
-        legendaryDesc.getDocument().addDocumentListener(listener);
+        legendaryDesc.getDocument().addDocumentListener(descListener);
         legendaryDesc.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                listener.start();
+                descListener.start();
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                listener.stop();
+                descListener.stop();
             }
         });
 

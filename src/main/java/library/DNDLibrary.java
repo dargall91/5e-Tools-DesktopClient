@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public interface DNDLibrary {
     public Monster getMonster(String name);
-    public Encounter getEncounter(String gname);
+    public Encounter getEncounter(String name);
     public PlayerCharacter getPlayerCharacter(String name);
     public boolean addMonster(String name);
     public boolean addEncounter(String name);
