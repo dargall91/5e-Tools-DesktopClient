@@ -280,7 +280,6 @@ public class DNDLibraryImpl implements DNDLibrary {
         return result;
     }
 
-    //TODO: return a monster object? possibly makes it easier to reload info?
     public boolean restoreMonster(String name) {
         boolean result = false;
 
