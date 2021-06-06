@@ -1866,17 +1866,22 @@ public class MonsterBuilder extends JSplitPane {
         return monster;
     }
 
+    public void setMonster(String name) {
+        monster = proxy.getMonster(name);
+        refreshRight();
+    }
+
     /**
      * Sets the currently selected value in the JList. After saving or updating
      * some things (such as adding an ability, action, etc, the current
      * selection seems to be lost, preventing back to back saving without
      * re-selecting the monster
      */
-     public void setSelection() {
-         list.setSelectedValue(monster.getName(), true);
-         //updates current monster info, needed for restoring
-         monster = proxy.getMonster(monster.getName());
-     }
+    public void setSelection() {
+        list.setSelectedValue(monster.getName(), true);
+        //updates current monster info, needed for restoring
+        monster = proxy.getMonster(monster.getName());
+    }
 
     private void updateAbilityModifier(JLabel modLabel, String stat) {
         modLabel.setText("(" + monster.getSignedAbilityModifier(stat) + ")");
