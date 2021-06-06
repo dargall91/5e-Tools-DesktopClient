@@ -1,6 +1,6 @@
 {
     "ac": "0",
-    "languages": "",
+    "languages": "none",
     "senses": "passive perception 10",
     "scores": [
         {
@@ -37,9 +37,9 @@
     "legendaryActions": [],
     "hp": "0",
     "legendaryActionCount": 0,
-    "type": "",
+    "type": "type",
     "proficiency": 0,
-    "speed": "",
+    "speed": "30 feet",
     "skills": [
         {
             "skill": "Athletics",
@@ -133,7 +133,7 @@
         }
     ],
     "abilities": [],
-    "size": "",
+    "size": "size",
     "name": "select a monster",
     "displayName": "select a monster",
     "challenge": "-1",
