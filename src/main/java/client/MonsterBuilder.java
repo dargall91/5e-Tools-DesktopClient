@@ -1868,7 +1868,9 @@ public class MonsterBuilder extends JSplitPane {
 
     public void setMonster(String name) {
         monster = proxy.getMonster(name);
-        refreshRight();
+        refresh();
+        monster = proxy.getMonster(name);
+        setSelection();
     }
 
     /**
