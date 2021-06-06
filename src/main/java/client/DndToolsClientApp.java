@@ -1,5 +1,7 @@
 package client;
 
+import monster.Monster;
+
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -92,6 +94,9 @@ public class DndToolsClientApp extends JFrame {
         menuItem = new JMenuItem("Delete");
         menuItem.addActionListener(menuListener);
         builderMenu.add(menuItem);
+        menuItem = new JMenuItem("Copy");
+        menuItem.addActionListener(menuListener);
+        builderMenu.add(menuItem);
         menuItem = new JMenuItem("Restore");
         menuItem.addActionListener(menuListener);
         builderMenu.add(menuItem);
@@ -144,7 +149,7 @@ public class DndToolsClientApp extends JFrame {
                     if (name.equals("select a monster")) {
                         JOptionPane.showMessageDialog(tabPane.getParent(), "No monster selected.",
                                 "Error", JOptionPane.ERROR_MESSAGE);
-                        System.out.println("Error restoring");
+                        System.out.println("Error deleting");
                     } else {
                         int yesNo = JOptionPane.showConfirmDialog(tabPane.getParent(),
                                 "Are you sure you wish to delete " + name + "?", "Delete",
@@ -162,7 +167,7 @@ public class DndToolsClientApp extends JFrame {
 
                     do {
                         name = JOptionPane.showInputDialog(monBuilder, message,
-                                "Create New monster.Monster", JOptionPane.QUESTION_MESSAGE);
+                                "Create New Monster", JOptionPane.QUESTION_MESSAGE);
 
                         if (name == null) {
                             break;
@@ -175,6 +180,50 @@ public class DndToolsClientApp extends JFrame {
 
                         if (valid) {
                             monBuilder.refresh();
+                        } else {
+                            System.out.println("File already exists");
+                            message = "There is already a monster named \"" + name
+                                    + "\"\nEnter a different name:";
+                        }
+                    } while (!valid);
+                } else if (command.equals("Copy")) {
+                    String base = monBuilder.getLastSelected();
+
+                    if (base.equals("select a monster")) {
+                        JOptionPane.showMessageDialog(monBuilder, "No Monster Selected",
+                                "Copy Error", JOptionPane.ERROR_MESSAGE);
+                        System.out.println("Copy Error: No monster selected");
+                        return;
+                    }
+
+                    boolean valid = true;
+                    String message = "Enter the copy's name:";
+                    String name;
+
+                    do {
+                        name = JOptionPane.showInputDialog(monBuilder, message,
+                                "Copy " + base, JOptionPane.QUESTION_MESSAGE);
+
+                        if (name == null) {
+                            break;
+                        } else if (name.equals("")) {
+                            message = "Enter the copy's name:";
+                            continue;
+                        }
+
+                        //TODO: create a copyMonster method on server to make this process more efficient
+                        valid = proxy.addMonster(name);
+
+                        if (valid) {
+                            Monster copy = proxy.getMonster(base);
+                            proxy.updateMonster(copy);
+                            copy.setName(name);
+                            copy.setDisplayName(name);
+                            proxy.updateMonster(copy);
+                            monBuilder.setMonster(name);
+                            //monBuilder.refresh();
+                            //monBuilder.setSelection();
+                            //monBuilder.setMonster(name);
                         } else {
                             System.out.println("File already exists");
                             message = "There is already a monster named \"" + name
