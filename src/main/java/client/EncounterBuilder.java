@@ -342,6 +342,7 @@ public class EncounterBuilder extends JSplitPane {
         panel.setMaximumSize(new Dimension(INNER_WIDTH, INNER_HEIGHT));
 
         ArrayList<String> musicList = proxy.getMusicList();
+        Collections.sort(musicList);
         JLabel themeLabel = new JLabel("Battle Theme:");
         JComboBox theme = new JComboBox(musicList.toArray());
         theme.setSelectedItem(encounter.getTheme());
@@ -574,6 +575,8 @@ public class EncounterBuilder extends JSplitPane {
                 optionPanel.setPreferredSize(new Dimension(100, 500));
                 optionPanel.setLayout(new BoxLayout(optionPanel, BoxLayout.Y_AXIS));
 
+                //TODO: make search bar work
+
                 //contains search field and label
                 JPanel searchPanel = new JPanel();
                 searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.X_AXIS));
@@ -594,6 +597,8 @@ public class EncounterBuilder extends JSplitPane {
 
                 selectList = new JList();
                 ArrayList<String> monList = proxy.getMonsterList();
+
+                Collections.sort(monList);
 
                 selectList.setModel(new AbstractListModel() {
                     public int getSize() {

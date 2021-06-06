@@ -26,7 +26,7 @@ public class MonsterData {
         quantity = 1;
         minion = false;
         reinforcement = false;
-        initiative = 0;
+        initiative = 1;
     }
 
     public String getMonster() {
